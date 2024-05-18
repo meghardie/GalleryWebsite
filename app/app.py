@@ -90,14 +90,12 @@ def homePage():
 @app.route("/viewGallery<int:galleryID>")
 def viewGallery(galleryID):
     #gets info for spefic gallery
-    gallery = Gallery.query.filter_by("galleryId" == galleryID)
+    gallery = Gallery.query.filter_by("id" == galleryID)
+    photos = Photo.query.filter_by("galleryId" == gallery.id)
     photoURLs = []
     #adds all photo urls to a list
-    for i in range(1, gallery.numPhotos + 1):
-        photoPath = getattr(gallery, f'photoPath{i}')
-        #included for robustness - shouldn't be needed if data correct
-        if photoPath:
-            photoURLs.append(photoPath)
+    for photo in photos:
+        photoURLs.append(photo.photoURL)
     return render_template('indvGallery.html', title = gallery.title, description = gallery.description, numPhotos = gallery.numPhotos, dateCreated = gallery.dateCreated, dateLastEdited = gallery.dateLastEdited, photoURLS = photoURLs)
 
 
