@@ -31,26 +31,6 @@ class User(UserMixin, db.Model):
     passwordHash = db.Column(db.String(128))
     galleries = db.relationship('Gallery', backref='user')
 
-#declaring gallery table in database
-class Gallery(db.Model):
-    __tablename__ = 'galleries'
-    id = db.Column(db.Integer, primary_key=True)
-    userId = db.Column(db.Integer, db.ForeignKey(User.id))
-    numPhotos = db.Column(db.Integer)
-    title = db.Column(db.String(40))
-    dateCreated = db.Column(db.Date)
-    dateLastEdited = db.Column(db.Date)
-    description = db.Column(db.Text)
-    photos = db.relationship('Photo', backref='gallery')
-
-class Photo(db.Model):
-    __tablename__ = 'photos'
-    __bind_key__ = 'photos'
-    id = db.Column(db.Integer, primary_key=True)
-    galleryId = db.Column(db.Integer, db.ForeignKey(Gallery.id))
-    photoURL = db.Column(db.String(32))
-    thumbnailURL = db.Column(db.String(32))
-
     #hashes users password to add to database
     def set_password(self, password):
         self.passwordHash = generate_password_hash(password)
@@ -70,6 +50,26 @@ class Photo(db.Model):
 
     def __repr__(self):
         return '<User {0}>'.format(self.username)
+
+#declaring gallery table in database
+class Gallery(db.Model):
+    __tablename__ = 'galleries'
+    id = db.Column(db.Integer, primary_key=True)
+    userId = db.Column(db.Integer, db.ForeignKey(User.id))
+    numPhotos = db.Column(db.Integer)
+    title = db.Column(db.String(40))
+    dateCreated = db.Column(db.Date)
+    dateLastEdited = db.Column(db.Date)
+    description = db.Column(db.Text)
+    photos = db.relationship('Photo', backref='gallery')
+
+class Photo(db.Model):
+    __tablename__ = 'photos'
+    __bind_key__ = 'photos'
+    id = db.Column(db.Integer, primary_key=True)
+    galleryId = db.Column(db.Integer, db.ForeignKey(Gallery.id))
+    photoURL = db.Column(db.String(32))
+    thumbnailURL = db.Column(db.String(32))
 
 @lm.user_loader
 def load_user(id):
