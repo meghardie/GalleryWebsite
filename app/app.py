@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my website password'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.sqlite3'
-app.config['SQLALCHEMY_BINDS'] = {"users": 'sqlite:///data.sqlite3'}
+app.config['SQLALCHEMY_BINDS'] = {"users": 'sqlite:///data.sqlite3', "photos": 'sqlite:///data.sqlite3'}
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
@@ -19,37 +19,37 @@ db = SQLAlchemy(app)
 lm = LoginManager(app)
 lm.login_view = 'login'
 
-#declaring gallery table in database
-class Gallery(db.Model):
-    __tablename__ = 'galleries'
-    galleryId = db.Column(db.Integer, primary_key=True)
-    userId = db.Column(db.Integer)
-    numPhotos = db.Column(db.Integer)
-    title = db.Column(db.String(40))
-    dateCreated = db.Column(db.Date)
-    dateLastEdited = db.Column(db.Date)
-    description = db.Column(db.Text)
-    photoPath1 = db.Column(db.String(30))
-    photoPath2 = db.Column(db.String(30))
-    photoPath3 = db.Column(db.String(30))
-    photoPath4 = db.Column(db.String(30))
-    photoPath5 = db.Column(db.String(30))
-    photoPath6 = db.Column(db.String(30))
-    photoPath7 = db.Column(db.String(30))
-    photoPath8 = db.Column(db.String(30))
-    photoPath9 = db.Column(db.String(30))
-    photoPath10 = db.Column(db.String(30))
-
 #declaring user table in database
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     __bind_key__ = 'users'
-    userId = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True)
     fname = db.Column(db.String(32))
     lname = db.Column(db.String(32))
     email = db.Column(db.String(300))
     username = db.Column(db.String(24))
     passwordHash = db.Column(db.String(128))
+    galleries = db.relationship('Gallery', backref='user')
+
+#declaring gallery table in database
+class Gallery(db.Model):
+    __tablename__ = 'galleries'
+    id = db.Column(db.Integer, primary_key=True)
+    userId = db.Column(db.Integer, db.ForeignKey(User.id))
+    numPhotos = db.Column(db.Integer)
+    title = db.Column(db.String(40))
+    dateCreated = db.Column(db.Date)
+    dateLastEdited = db.Column(db.Date)
+    description = db.Column(db.Text)
+    photos = db.relationship('Photo', backref='gallery')
+
+class Photo(db.Model):
+    __tablename__ = 'photos'
+    __bind_key__ = 'photos'
+    id = db.Column(db.Integer, primary_key=True)
+    galleryId = db.Column(db.Integer, db.ForeignKey(Gallery.id))
+    photoURL = db.Column(db.String(32))
+    thumbnailURL = db.Column(db.String(32))
 
     #hashes users password to add to database
     def set_password(self, password):
