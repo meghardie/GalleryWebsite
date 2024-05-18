@@ -19,7 +19,7 @@ db = SQLAlchemy(app)
 lm = LoginManager(app)
 lm.login_view = 'login'
 
-
+#declaring gallery table in database
 class Gallery(db.Model):
     __tablename__ = 'galleries'
     galleryId = db.Column(db.Integer, primary_key=True)
@@ -40,6 +40,7 @@ class Gallery(db.Model):
     photoPath9 = db.Column(db.String(30))
     photoPath10 = db.Column(db.String(30))
 
+#declaring user table in database
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     __bind_key__ = 'users'
@@ -50,12 +51,15 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(24))
     passwordHash = db.Column(db.String(128))
 
+    #hashes users password to add to database
     def set_password(self, password):
         self.passwordHash = generate_password_hash(password)
 
+    #checks if entered password matches hashed one in database
     def verify_password(self, password):
         return check_password_hash(self.passwordHash, password)
 
+    #used to add user to database
     @staticmethod
     def register(username, password, fname, lname, email):
         user = User(username=username, fname=fname, lname=lname, email=email)
@@ -71,9 +75,29 @@ class User(UserMixin, db.Model):
 def load_user(id):
     return User.query.get(int(id))
 
+#checks if current user is logged into website
+def isLoggedIn():
+    if 'loggedIn' not in session:
+        session['loggedIn'] = False
+        session.modified = True
+    return session['loggedIn']
+
 @app.route('/')
 def homePage():
-    return render_template('index.html', loggedIn = False)
+    return render_template('index.html', loggedIn = isLoggedIn())
+
+@app.route("/viewGallery<int:galleryID>")
+def viewGallery(galleryID):
+    #gets info for spefic gallery
+    gallery = Gallery.query.filter_by("galleryId" == galleryID)
+    photoURLs = []
+    #adds all photo urls to a list
+    for i in range(1, gallery.numPhotos + 1):
+        photoPath = getattr(gallery, f'photoPath{i}')
+        #included for robustness - shouldn't be needed if data correct
+        if photoPath:
+            photoURLs.append(photoPath)
+    return render_template('indvGallery.html', title = gallery.title, description = gallery.description, numPhotos = gallery.numPhotos, dateCreated = gallery.dateCreated, dateLastEdited = gallery.dateLastEdited, photoURLS = photoURLs)
 
 
 if __name__ == '__main__':
