@@ -84,7 +84,8 @@ def isLoggedIn():
 
 @app.route('/')
 def homePage():
-    return render_template('index.html', loggedIn = isLoggedIn())
+    galleries = Gallery.query.all()
+    return render_template('index.html', galleries = galleries, loggedIn = isLoggedIn())
 
 @app.route("/viewGallery<int:galleryID>")
 def viewGallery(galleryID):

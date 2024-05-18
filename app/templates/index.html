@@ -1,7 +1,32 @@
 {% extends "base.html" %}
 
-{% block title %}TEST{% endblock %}
+{% block title %}Gallery Home{% endblock %}
 
 {% block content %}
-    hello world
+    <div class = "pageTitle">
+        Our Galleries
+    </div>
+    {% for gallery in galleries %}
+        <div class = "galleryPreview">
+            {% if numPhotos ==1 %}
+                <div class = "singlePhotoPreview">
+                </div>
+            {% elif numPhotos >= 2 %}
+                <div class = "photosPreview1x2">
+                </div>
+            {% elif numPhotos >= 4 %}
+                <div class = "photosPreview2x2">
+                </div>
+            {% elif numPhotos >= 6 %}
+                <div class = "photosPreview3x2">
+                </div>
+            {% elif numPhotos >= 8 %}
+                <div class = "photosPreview4x2">
+                </div>
+            {% else %}
+                <div class = "photosPreview5x2">
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
 {% endblock %}
