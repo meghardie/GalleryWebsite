@@ -6,19 +6,23 @@
     <div class = "pageTitle">
         Our Galleries
     </div>
-    {% for gallery in galleries %}
+    <div id = "galleries">
+    {% for key in galleries %}
+        {% set gallery = galleries[key] %}
+        {% set numPhotos = gallery['numPhotos'] %}
+        {% set photosList = gallery['photos'] %}
         <div class = "galleryPreview">
-            {% set numPhotos = gallery.numPhotos %}
-            {% set photos = gallery.photos %}
-            <div class = "photosPreview2x2">
+            <div class = "photosPreview">
                 {% for i in range(4) %}
                     <div class = "thumbnailPhoto">
-                        {% set photoURL = photos[i % numPhotos].thumbnailURL %}
-                        <img src = "{{photoURL}}">
+                        {% set photoURL = photos[photosList[(i%numPhotos)]]['thumbnailURL'] %}
+                        <img src="{{photoURL}}">
                     </div>
                 {% endfor %}
             </div>
-
+            <div class = "galleryTitle">{{gallery.title}}</div>
+            <div class = "galleryUser"></div>
         </div>
     {% endfor %}
+    </div>
 {% endblock %}

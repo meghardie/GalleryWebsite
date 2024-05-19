@@ -82,15 +82,64 @@ def isLoggedIn():
         session.modified = True
     return session['loggedIn']
 
+def getUsers():
+    if 'users' not in globals():
+        result = User.query.all()
+        global users
+        users = {}
+        for user in result:
+            users[user.id] = {
+                'id': user.id,
+                'fname': user.fname,
+                'lname': user.lname,
+                'email': user.email,
+                'username': user.username,
+                'passwordHash': user.passwordHash,
+                'galleries': [gallery.id for gallery in user.galleries]
+            }
+    return users
+
+def getGalleries():
+    if 'galleries' not in globals():
+        result = Gallery.query.all()
+        global galleries 
+        galleries = {}
+        for gallery in result:
+            galleries[gallery.id] = {
+                'id': gallery.id,
+                'userId': gallery.userId,
+                'numPhotos': gallery.numPhotos,
+                'title': gallery.title,
+                'dateCreated': gallery.dateCreated,
+                'dateLastEdited': gallery.dateLastEdited,
+                'description': gallery.description,
+                'photos': [photo.id for photo in gallery.photos]
+            }
+    return galleries
+
+def getPhotos():
+    if 'photos' not in globals():
+        result = Photo.query.all()
+        global photos 
+        photos = {}
+        for photo in result:
+            photos[photo.id] = {
+                'id': photo.id,
+                'galleryId': photo.galleryId,
+                'photoURL': photo.photoURL,
+                'thumbnailURL': photo.thumbnailURL
+            }
+    return photos
+
 @app.route('/')
 def homePage():
     galleries = Gallery.query.all()
-    return render_template('index.html', galleries = galleries, loggedIn = isLoggedIn())
+    return render_template('index.html', galleries = getGalleries(), photos = getPhotos(), users = getUsers(), loggedIn = isLoggedIn())
 
 @app.route("/viewGallery<int:galleryID>")
 def viewGallery(galleryID):
     #gets info for spefic gallery
-    gallery = Gallery.query.filter_by("id" == galleryID)
+    gallery = getGalleries()[galleryID]
     photos = Photo.query.filter_by("galleryId" == gallery.id)
     photoURLs = []
     #adds all photo urls to a list
