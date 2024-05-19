@@ -3,14 +3,23 @@
     --darkBackground: #E0E0E0;
 }
 
-.pageTitle{
+#navbar{
+    margin-bottom: 0;
+}
 
+.pageTitle{
+    margin: auto;
+    font-size: 20px;
+    background-color: var(--darkBackground);
+    text-align: center;
+    font-weight: bold;
+    height: 50px;
 }
 
 #galleries{
     display:grid;
     grid-gap: 20px;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .galleryPreview{
@@ -27,4 +36,16 @@
     margin-bottom: 10px;
     height: 255px;
     background-color: var(--lightBackground);
+}
+
+.previewTitle{
+    float:left;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.previewUser{
+    float: right;
+    padding: 5px;
+    padding-right: 10px;
 }

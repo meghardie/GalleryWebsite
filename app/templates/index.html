@@ -20,8 +20,8 @@
                     </div>
                 {% endfor %}
             </div>
-            <div class = "galleryTitle">{{gallery.title}}</div>
-            <div class = "galleryUser"></div>
+            <div class = "previewTitle">{{gallery['title']}}</div>
+            <div class = "previewUser">{{users[gallery['userId']]['username']}}</div>
         </div>
     {% endfor %}
     </div>
