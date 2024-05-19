@@ -8,23 +8,53 @@
     </div>
     {% for gallery in galleries %}
         <div class = "galleryPreview">
-            {% if numPhotos ==1 %}
-                <div class = "singlePhotoPreview">
-                </div>
-            {% elif numPhotos >= 2 %}
+            {% set numPhotos = gallery.numPhotos %}
+            {% set photos = gallery.photos %}
+
+            {% if numPhotos <= 2 %}
                 <div class = "photosPreview1x2">
+                    {% for i in range(2) %}
+                        <div>
+                            {% set photoURL = photos[i % numPhotos].thumbnailURL %}
+                            <img src = "{{photoURL}}">
+                        </div>
+                    {% endfor %}
                 </div>
-            {% elif numPhotos >= 4 %}
+            {% elif numPhotos <= 4 %}
                 <div class = "photosPreview2x2">
+                    {% for i in range(4) %}
+                        <div>
+                            {% set photoURL = photos[i % numPhotos].thumbnailURL %}
+                            <img src = "{{photoURL}}">
+                        </div>
+                    {% endfor %}
                 </div>
-            {% elif numPhotos >= 6 %}
-                <div class = "photosPreview3x2">
+            {% elif numPhotos <= 6 %}
+                <div class = "photosPreview2x3">
+                    {% for i in range(6) %}
+                        <div>
+                            {% set photoURL = photos[i % numPhotos].thumbnailURL %}
+                            <img src = "{{photoURL}}">
+                        </div>
+                    {% endfor %}
                 </div>
-            {% elif numPhotos >= 8 %}
-                <div class = "photosPreview4x2">
+            {% elif numPhotos <= 8 %}
+                <div class = "photosPreview2x4">
+                    {% for i in range(8) %}
+                        <div>
+                            {% set photoURL = photos[i % numPhotos].thumbnailURL %}
+                            <img src = "{{photoURL}}">
+                        </div>
+                    {% endfor %}
                 </div>
             {% else %}
-                <div class = "photosPreview5x2">
+                <div class = "photosPreview2x5">
+                    {% for i in range(10) %}
+                        <div>
+                            {% set photoURL = photos[i % numPhotos].thumbnailURL %}
+                            <img src = "{{photoURL}}">
+                        </div>
+                    {% endfor %}
                 </div>
             {% endif %}
         </div>
