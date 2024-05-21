@@ -52,8 +52,27 @@
     padding-right: 10px;
 }
 
-/* for login page */
-#loginForm{
+/* for login and register pages */
+#loginForm, #registerForm{
     margin: auto;
     width: 33%;
+    padding: 20px;
+}
+
+#registerLink{
+    margin: auto;
+    font-size: 1em;
+    text-align: center;
+}
+
+#invalidEmailMsg{
+    width: 33%;
+    color: red;
+    text-align: center;
+    margin: auto;
+    padding: 10px;
+}
+
+#invalidEmailMsg a{
+    color: black;
 }

@@ -1,9 +1,9 @@
 from flask import Flask, render_template, url_for, session, redirect
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, HiddenField, PasswordField
-from wtforms.validators import DataRequired,  ValidationError
-from flask_bootstrap import Bootstrap
+from wtforms.validators import ValidationError, DataRequired
 from flask_sqlalchemy import SQLAlchemy
+from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -88,6 +88,21 @@ def emailCheck(form, field):
     if ('@' not in fdata) or ('.' not in fdata) or len(fdata) < 5:
         raise ValidationError("Please enter a valid email")
 
+def containsData(form, field):
+    if len(field.data) == 0:
+        raise ValidationError("Please fill in this field")
+
+def validPassword(form, field):
+    fdata = field.data
+    if len(fdata) < 6 or len(fdata) > 15:
+        raise ValidationError("Password must be between 6 and 15 characters")
+    if fdata.lower() == fdata:
+        raise ValidationError("Password must contain at least 1 uppercase letter")
+
+def passwordsMatch(form, field):
+    if field.data != form.password1.data:
+        raise ValidationError("Passwords do not match")
+
 #checks if current user is logged into website
 def isLoggedIn():
     if 'loggedIn' not in session:
@@ -145,13 +160,27 @@ def getPhotos():
     return photos
 
 class loginForm(FlaskForm):
-    email = StringField("Email: ", validators = [DataRequired(), emailCheck])
-    password = PasswordField("Password: ", validators = [DataRequired()])
+    email = StringField("Email: ", validators = [containsData, emailCheck])
+    password = PasswordField("Password: ", validators = [containsData])
     submit = SubmitField('Submit')
+
+class registerForm(FlaskForm):
+    fname = StringField("First name(s): ", validators = [containsData])
+    lname = StringField("Last name: ", validators = [containsData])
+    email = StringField("Email: ", validators = [containsData, emailCheck])
+    username = StringField("Username (this will be displayed to other users when you post a gallery): ", validators = [containsData])
+    password1 = PasswordField("Password: ", validators = [containsData, validPassword])
+    password2 = PasswordField("Confirm your password: ", validators = [containsData, passwordsMatch])
+    submit = SubmitField("Create an account")
+
+with app.app_context():
+    users = getUsers()
+    galleries = getGalleries()
+    photos = getPhotos()
 
 @app.route('/')
 def homePage():
-    return render_template('index.html', galleries = getGalleries(), photos = getPhotos(), users = getUsers(), loggedIn = isLoggedIn(), username = getCurrentUsername())
+    return render_template('index.html', galleries = galleries, photos = photos, users = users, loggedIn = isLoggedIn(), username = getCurrentUsername())
 
 @app.route("/viewGallery<int:galleryID>")
 def viewGallery(galleryID):
@@ -170,19 +199,30 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email = form.email.data).first()
         if user is None or not user.verify_password(form.password.data):
-            print("email or password incorrect")
             return render_template('login.html', loginAttempted = True, form = form, loggedIn = False)
         else:
-            print("Sucessful login")
             session['userId'] = user.id
             session['loggedIn'] = True
             session.modified = True
             return redirect('/')
-    return render_template('login.html', loginAttempted = False, form = form, loggedIN = isLoggedIn())
+    return render_template('login.html', loginAttempted = False, form = form, loggedIn = isLoggedIn())
 
 @app.route("/register", methods = ['GET', 'POST'])
 def register():
-    return render_template('register.html')
+    form = registerForm()
+    if form.validate_on_submit():
+        if User.query.filter_by(email = form.email.data).first() != None:
+            return render_template('register.html', form = form, invalidEmail = True)
+        else:
+            newUser = User.register(form.username.data, form.password1.data, form.fname.data, form.lname.data, form.email.data)
+            session['userId'] = newUser.id
+            session['loggedIn'] = True
+            session.modified = True
+            global users
+            users = User.query.all()
+            return redirect('/')
+    else:
+        return render_template('register.html', form = form, invalidEmail = False)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,6 +1,19 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Register{% endblock %}
 
 {% block content %}
+    <div class = "pageTitle">
+        Register
+    </div>
+    {% if invalidEmail == True %}
+    <div id = "invalidEmailMsg">
+        The email you provided is already linked to an account<br>
+        Please login <a href = "{{ url_for('login') }}">here</a> or use a different email to create an account
+    </div>
+    {% endif %}
+    <div id = "registerForm">
+        {{wtf.quick_form(form)}}
+    </div>
 {% endblock %}
