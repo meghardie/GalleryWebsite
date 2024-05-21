@@ -1,6 +1,7 @@
-from flask import Flask, render_template, url_for, session
+from flask import Flask, render_template, url_for, session, redirect
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, HiddenField
+from wtforms import StringField, SubmitField, HiddenField, PasswordField
+from wtforms.validators import DataRequired,  ValidationError
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
@@ -26,7 +27,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key = True)
     fname = db.Column(db.String(32))
     lname = db.Column(db.String(32))
-    email = db.Column(db.String(300))
+    email = db.Column(db.String(300), unique = True)
     username = db.Column(db.String(24))
     passwordHash = db.Column(db.String(128))
     galleries = db.relationship('Gallery', backref='user')
@@ -74,6 +75,11 @@ class Photo(db.Model):
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+def emailCheck(form, field):
+    fdata = field.data
+    if ('@' not in fdata) or ('.' not in fdata) or len(fdata) < 5:
+        raise ValidationError("Please enter a valid email")
 
 #checks if current user is logged into website
 def isLoggedIn():
@@ -131,6 +137,11 @@ def getPhotos():
             }
     return photos
 
+class loginForm(FlaskForm):
+    email = StringField("Email: ", validators = [DataRequired(), emailCheck])
+    password = PasswordField("Password: ", validators = [DataRequired()])
+    submit = SubmitField('Submit')
+
 @app.route('/')
 def homePage():
     galleries = Gallery.query.all()
@@ -147,6 +158,25 @@ def viewGallery(galleryID):
         photoURLs.append(photo.photoURL)
     return render_template('indvGallery.html', title = gallery.title, description = gallery.description, numPhotos = gallery.numPhotos, dateCreated = gallery.dateCreated, dateLastEdited = gallery.dateLastEdited, photoURLS = photoURLs)
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = loginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email = form.email.data).first()
+        if user is None or not user.verify_password(form.password.data):
+            print("email or password incorrect")
+            return render_template('login.html', loginAttempted = True, form = form)
+        else:
+            print("Sucessful login")
+            session['userId'] = user.id
+            session['loggedIn'] = True
+            session.modified = True
+            return redirect('/')
+    return render_template('login.html', loginAttempted = False, form = form)
+
+@app.route("/register", methods = ['GET', 'POST'])
+def register():
+    return render_template('register.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

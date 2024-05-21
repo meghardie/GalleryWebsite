@@ -22,8 +22,8 @@
         <ul class="nav navbar-nav navbar-right">
             {% if loggedIn == False %}
                 <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-            {% else %}
+                <li><a href="{{ url_for('login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            {% elif loggedIn == True %}
                 <li><a href="#"><span class="glyphicon glyphicon-user"></span></a></li>
             {% endif %}
         </ul>

@@ -3,6 +3,7 @@
     --darkBackground: #E0E0E0;
 }
 
+/* for all pages*/
 #navbar{
     margin-bottom: 0;
 }
@@ -16,6 +17,7 @@
     height: 50px;
 }
 
+/* for home page */
 #galleries{
     display:grid;
     grid-gap: 20px;
@@ -48,4 +50,10 @@
     float: right;
     padding: 5px;
     padding-right: 10px;
+}
+
+/* for login page */
+#loginForm{
+    margin: auto;
+    width: 33%;
 }
