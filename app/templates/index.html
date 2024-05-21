@@ -12,16 +12,20 @@
         {% set numPhotos = gallery['numPhotos'] %}
         {% set photosList = gallery['photos'] %}
         <div class = "galleryPreview">
-            <div class = "photosPreview">
-                {% for i in range(4) %}
-                    <div class = "thumbnailPhoto">
-                        {% set photoURL = photos[photosList[(i%numPhotos)]]['thumbnailURL'] %}
-                        <img src="{{photoURL}}">
-                    </div>
-                {% endfor %}
-            </div>
-            <div class = "previewTitle">{{gallery['title']}}</div>
-            <div class = "previewUser">{{users[gallery['userId']]['username']}}</div>
+            <a href = "{{ url_for('viewGallery', galleryID = gallery['id'])}}">
+                <div class = "photosPreview">
+                    {% for i in range(4) %}
+                        <div class = "thumbnailPhoto">
+                            {% set photoURL = photos[photosList[(i%numPhotos)]]['thumbnailURL'] %}
+                            <img src="{{photoURL}}">
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class = "previewDetails">
+                    <div class = "previewTitle">{{gallery['title']}}</div>
+                    <div class = "previewUser">{{users[gallery['userId']]['username']}}</div>
+                </div>
+            </a>
         </div>
     {% endfor %}
     </div>

@@ -186,12 +186,12 @@ def homePage():
 def viewGallery(galleryID):
     #gets info for spefic gallery
     gallery = getGalleries()[galleryID]
-    photos = Photo.query.filter_by("galleryId" == gallery.id)
+    photos = Photo.query.filter_by(galleryId=gallery['id']).all()
     photoURLs = []
     #adds all photo urls to a list
     for photo in photos:
         photoURLs.append(photo.photoURL)
-    return render_template('indvGallery.html', title = gallery.title, description = gallery.description, numPhotos = gallery.numPhotos, dateCreated = gallery.dateCreated, dateLastEdited = gallery.dateLastEdited, photoURLS = photoURLs)
+    return render_template('indvGallery.html', title = gallery['title'], description = gallery['description'], numPhotos = gallery['numPhotos'], dateCreated = gallery['dateCreated'], dateLastEdited = gallery['dateLastEdited'], photoURLS = photoURLs)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
