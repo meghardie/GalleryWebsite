@@ -1,7 +1,24 @@
 {% extends "base.html" %}
 
-{% block title %}{title}{% endblock %}
+{% block title %}{{title}}{% endblock %}
 
 {% block content %}
-    hello world
+    <div class = "pageTitle">
+        {{title}}
+    </div>
+    <div id = "indvGallery">
+        <div id = "images">
+            <img src = "{{URLs[0]}}" style = "height: 500px">
+        </div>
+        <div id = "galleryDetails">
+            <div id = "galleryDates">
+                Date Created: {{dateCreated.strftime('%d-%m-%Y')}}<br>
+                Date Last Edited: {{dateLastEdited.strftime('%d-%m-%Y')}}
+            </div> 
+            <div id = "galleryUser">{{username}}</div>
+            <div id = "galleryDescription">
+                {{description}}
+            </div>
+        </div>
+    </div>
 {% endblock %}

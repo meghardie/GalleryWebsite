@@ -81,3 +81,36 @@
 #invalidEmailMsg a{
     color: black;
 }
+
+/* for individual gallery page*/
+#indvGallery{
+    width: 50%;
+    margin: auto;
+    background-color: var(--lightBackground);
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+#images{
+    text-align: center;
+}
+
+#galleryDetails{
+    background-color: var(--darkBackground);
+    font-weight: bold;
+    padding:20px 40px;
+}
+
+#galleryDates{
+    float: left;
+}
+
+#galleryUser{
+    float: right;
+}
+
+#galleryDescription{
+    margin-top: 40px;
+    background-color: var(--darkBackground);
+    font-weight: normal;
+}
