@@ -73,8 +73,15 @@ class Photo(db.Model):
     thumbnailURL = db.Column(db.String(32))
 
 @lm.user_loader
-def load_user(id):
+def loadUser(id):
     return User.query.get(int(id))
+
+def getCurrentUsername():
+    currentUserID = session.get("userId", None)
+    currentUsername = None
+    if currentUserID != None:
+        currentUsername = loadUser(currentUserID).username
+    return currentUsername
 
 def emailCheck(form, field):
     fdata = field.data
@@ -144,8 +151,7 @@ class loginForm(FlaskForm):
 
 @app.route('/')
 def homePage():
-    galleries = Gallery.query.all()
-    return render_template('index.html', galleries = getGalleries(), photos = getPhotos(), users = getUsers(), loggedIn = isLoggedIn())
+    return render_template('index.html', galleries = getGalleries(), photos = getPhotos(), users = getUsers(), loggedIn = isLoggedIn(), username = getCurrentUsername())
 
 @app.route("/viewGallery<int:galleryID>")
 def viewGallery(galleryID):
@@ -165,14 +171,14 @@ def login():
         user = User.query.filter_by(email = form.email.data).first()
         if user is None or not user.verify_password(form.password.data):
             print("email or password incorrect")
-            return render_template('login.html', loginAttempted = True, form = form)
+            return render_template('login.html', loginAttempted = True, form = form, loggedIn = False)
         else:
             print("Sucessful login")
             session['userId'] = user.id
             session['loggedIn'] = True
             session.modified = True
             return redirect('/')
-    return render_template('login.html', loginAttempted = False, form = form)
+    return render_template('login.html', loginAttempted = False, form = form, loggedIN = isLoggedIn())
 
 @app.route("/register", methods = ['GET', 'POST'])
 def register():
