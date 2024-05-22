@@ -26,13 +26,28 @@
                 <li><a href="{{ url_for('register') }}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
                 <li><a href="{{ url_for('login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
             {% elif loggedIn == True %}
-                <li><a href="#">{{username}} <span class="glyphicon glyphicon-user"></span></a></li>
+                <li onmouseenter="showPopup()" onmouseleave="hidePopup()"><a href="#">{{username}} <span class="glyphicon glyphicon-user"></span></a></li>
             {% endif %}
         </ul>
     </div>
 </nav>
+<div id = "logoutPopup" onmouseenter="showPopup()" onmouseleave="hidePopup()">
+    <div class="arrow-up"></div>
+    <div id = "logoutButton">
+        <a id = "logoutButton" href = "{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
 
     {% block content %}{% endblock %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script>
+        function showPopup(){
+            document.getElementById("logoutPopup").style.display = "block";
+        }
+
+        function hidePopup(){
+            document.getElementById("logoutPopup").style.display = "none";
+        }
+    </script>
 {% endblock %}

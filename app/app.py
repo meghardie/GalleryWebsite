@@ -206,6 +206,13 @@ def login():
             return redirect('/')
     return render_template('login.html', loginAttempted = False, form = form, loggedIn = isLoggedIn())
 
+@app.route("/logout")
+def logout():
+    session.pop("userId")
+    session['loggedIn'] = False
+    session.modified = True
+    return redirect(url_for('homePage'))
+
 @app.route("/register", methods = ['GET', 'POST'])
 def register():
     form = registerForm()
@@ -219,7 +226,7 @@ def register():
             session.modified = True
             global users
             users = User.query.all()
-            return redirect('/')
+            return redirect(url_for('homePage'))
     else:
         return render_template('register.html', form = form, invalidEmail = False)
 
