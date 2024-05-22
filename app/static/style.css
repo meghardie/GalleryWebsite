@@ -15,6 +15,7 @@
     text-align: center;
     font-weight: bold;
     height: 50px;
+    padding-top: 10px;
 }
 
 /* for home page */
@@ -84,7 +85,7 @@
 
 /* for individual gallery page*/
 #indvGallery{
-    width: 50%;
+    width: 70%;
     margin: auto;
     background-color: var(--lightBackground);
     margin-top: 20px;
