@@ -142,26 +142,35 @@
     margin-bottom: 50px;
 }
 
-#images{
+.images{
     text-align: center;
 }
 
-#galleryDetails{
+.galleryDetails{
     background-color: var(--darkBackground);
     font-weight: bold;
     padding:20px 40px;
 }
 
-#galleryDates{
+.galleryDates{
     float: left;
 }
 
-#galleryUser{
+.galleryUser{
     float: right;
 }
 
-#galleryDescription{
+.galleryDescription{
     margin-top: 40px;
     background-color: var(--darkBackground);
     font-weight: normal;
+}
+
+/* for add gallery page*/
+#galleryPreview{
+    width: 70%;
+    margin: auto;
+    background-color: var(--lightBackground);
+    margin-top: 20px;
+    margin-bottom: 50px;
 }

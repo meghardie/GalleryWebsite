@@ -8,6 +8,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my website password'
@@ -232,8 +233,11 @@ def register():
 
 @app.route("/addGallery")
 def addGallery():
-    return render_template("addGallery.html", loggedIn = isLoggedIn())
-
+    if isLoggedIn():
+        username = getCurrentUsername()
+    else:
+        username = None
+    return render_template("addGallery.html", loggedIn = isLoggedIn(), currentDate = datetime.date.today(), username = username)
 
 with app.app_context():
     users = getUsers()

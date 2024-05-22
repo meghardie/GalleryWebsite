@@ -7,18 +7,18 @@
         {{title}}
     </div>
     <div id = "indvGallery">
-        <div id = "images">
-            <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" id = "leftArrow" onclick = "nextPhoto(-1)">
+        <div class = "images">
+            <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
             <img src = "{{URLs[0]}}" style = "height: 500px" id = "photo">
-            <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" id = "rightArrow" onclick = "nextPhoto(1)">
+            <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" class = "rightArrow" onclick = "nextPhoto(1)">
         </div>
-        <div id = "galleryDetails">
-            <div id = "galleryDates">
+        <div class = "galleryDetails">
+            <div class = "galleryDates">
                 Date Created: {{dateCreated.strftime('%d-%m-%Y')}}<br>
                 Date Last Edited: {{dateLastEdited.strftime('%d-%m-%Y')}}
             </div> 
-            <div id = "galleryUser">{{username}}</div>
-            <div id = "galleryDescription">
+            <div class = "galleryUser">{{username}}</div>
+            <div class = "galleryDescription">
                 {{description}}
             </div>
         </div>
@@ -40,7 +40,5 @@
 
         console.log(photoNum)
         console.log(photos)
-        // document.getElementById("leftArrow").addEventListener("click", nextPhoto(-1))
-        // document.getElementById("rightArrow").addEventListener("click", nextPhoto(1))
     </script>
 {% endblock %}

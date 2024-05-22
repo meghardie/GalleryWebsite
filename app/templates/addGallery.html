@@ -13,6 +13,50 @@
         </div>
     </div>
     {% else %}
-    logged in!
+    <div class = "pageTitle">
+        Create a Gallery
+    </div>
+    {% set dateCreated = currentDate %}
+    {% set dateLastEdited = currentDate %}
+    {% set title = "" %}
+    {% set description = "" %}
+    {% set photos = [] %}
+    {% set numPhotos = 0 %}
+    <div id = galleryPreview>
+        <div class = "pageTitle" >Gallery Preview<br></div>
+        <div class = "images">
+            <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
+            <img src = "{{photos[0]}}" style = "height: 500px" id = "photo">
+            <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" class = "rightArrow" onclick = "nextPhoto(1)">
+        </div>
+        <div class = "galleryDetails">
+            <div class = "galleryDates">
+                Date Created: {{dateCreated.strftime('%d-%m-%Y')}}<br>
+                Date Last Edited: {{dateLastEdited.strftime('%d-%m-%Y')}}
+            </div> 
+            <div class = "galleryUser">{{username}}</div>
+            <div class = "galleryDescription">
+                {{description}}
+            </div>
+        </div>
+    </div>
     {% endif %}
+
+    <script>
+        photoNum = 0
+        photos = []
+
+        function nextPhoto(change){
+            console.log("Changing photo")
+            photoNum = (photoNum + change) % parseInt("{{numPhotos}}")
+            console.log(photoNum)
+            key = photoNum.toString()
+            console.log(key)
+            console.log(photos[key])
+            document.getElementById("photo").src = photos[key]
+        }
+
+        console.log(photoNum)
+        console.log(photos)
+    </script>
 {% endblock %}
