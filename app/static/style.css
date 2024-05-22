@@ -174,3 +174,17 @@
     margin-top: 20px;
     margin-bottom: 50px;
 }
+
+/* for settings page */
+#settingsForm{
+    margin: auto;
+    width: 33%;
+    padding: 20px;
+}
+
+#settingsInstructions{
+    text-align: center;
+    margin: auto;
+    font-size: 1.25em;
+    padding-top: 10px;
+}

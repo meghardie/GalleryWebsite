@@ -19,7 +19,7 @@
             <li><a href="{{ url_for('homePage') }}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
             <li><a href="#"><span class="glyphicon glyphicon-picture"></span> My Galleries</a></li>
             <li><a href="{{ url_for('addGallery') }}"><span class="glyphicon glyphicon-plus"></span> Add Gallery</a></li>
-            <li><a href="#"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+            <li><a href="{{ url_for('settings') }}"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {% if loggedIn == False %}

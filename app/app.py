@@ -3,6 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, HiddenField, PasswordField
 from wtforms.validators import ValidationError, DataRequired
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import update
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 from flask_session import Session
@@ -105,6 +106,21 @@ def passwordsMatch(form, field):
     if field.data != form.password1.data:
         raise ValidationError("Passwords do not match")
 
+def updateEmailCheck(form, field):
+    fdata = field.data
+    if (('@' not in fdata) or ('.' not in fdata) or len(fdata) < 5) and len(fdata) != 0:
+        raise ValidationError("Please enter a valid email")
+
+def updatePasswordCheck(form, field):
+    fdata = field.data
+    if len(fdata) != 0:
+        if fdata != form.password1.data:
+            raise ValidationError("Passwords must match")
+        if len(fdata) < 6 or len(fdata) > 15:
+            raise ValidationError("Password must be between 6 and 15 characters")
+        if fdata.lower() == fdata:
+            raise ValidationError("Password must contain at least 1 uppercase letter")
+
 #checks if current user is logged into website
 def isLoggedIn():
     if 'loggedIn' not in session:
@@ -175,6 +191,15 @@ class registerForm(FlaskForm):
     password2 = PasswordField("Confirm your password: ", validators = [containsData, passwordsMatch])
     submit = SubmitField("Create an account")
 
+class settingsForm(FlaskForm):
+    fname = StringField("First name:")
+    lname = StringField("Last name: ")
+    email = StringField("Email: ", validators = [updateEmailCheck])
+    username = StringField("Username (this will be displayed to other users when you post a gallery): ")
+    password1 = PasswordField("Change Password: ")
+    password2 = PasswordField("Confirm your new password: ", validators = [updatePasswordCheck])
+    submit = SubmitField("Update details")
+
 @app.route("/")
 def homePage():
     return render_template('index.html', galleries = galleries, photos = photos, users = users, loggedIn = isLoggedIn(), username = getCurrentUsername())
@@ -204,7 +229,7 @@ def login():
             session['userId'] = user.id
             session['loggedIn'] = True
             session.modified = True
-            return redirect('/')
+            return redirect(url_for('homePage'))
     return render_template('login.html', loginAttempted = False, form = form, loggedIn = isLoggedIn())
 
 @app.route("/logout")
@@ -238,6 +263,33 @@ def addGallery():
     else:
         username = None
     return render_template("addGallery.html", loggedIn = isLoggedIn(), currentDate = datetime.date.today(), username = username)
+
+@app.route("/accountSettings", methods = ['GET', 'POST'])
+def settings():
+    form = settingsForm()
+    if form.validate_on_submit():
+        userId = session.get('userId')
+        user = User.query.get(userId)
+        if user:
+            if len(form.fname.data) != 0:
+                db.session.execute(update(User).where(User.id == userId).values(fname = form.fname.data))
+                db.session.commit()
+            if len(form.lname.data) != 0:
+                db.session.execute(update(User).where(User.id == userId).values(lname = form.lname.data))
+                db.session.commit()
+            if len(form.email.data) != 0:
+                db.session.execute(update(User).where(User.id == userId).values(email = form.email.data))
+                db.session.commit()
+            if len(form.username.data) != 0:
+                db.session.execute(update(User).where(User.id == userId).values(username = form.username.data))
+                db.session.commit()
+            if len(form.password1.data) != 0:
+                db.session.execute(update(User).where(User.id == userId).values(passwordHash = generate_password_hash(form.password1.data)))
+                db.session.commit()
+            global users
+            users = User.query.all()
+            return redirect(url_for('homePage'))
+    return render_template("settings.html", loggedIn = isLoggedIn(), form = form)
 
 with app.app_context():
     users = getUsers()
