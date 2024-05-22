@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, session, redirect
+from flask import Flask, render_template, url_for, session, redirect, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, HiddenField, PasswordField
 from wtforms.validators import ValidationError, DataRequired
@@ -7,6 +7,7 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my website password'
@@ -173,12 +174,7 @@ class registerForm(FlaskForm):
     password2 = PasswordField("Confirm your password: ", validators = [containsData, passwordsMatch])
     submit = SubmitField("Create an account")
 
-with app.app_context():
-    users = getUsers()
-    galleries = getGalleries()
-    photos = getPhotos()
-
-@app.route('/')
+@app.route("/")
 def homePage():
     return render_template('index.html', galleries = galleries, photos = photos, users = users, loggedIn = isLoggedIn(), username = getCurrentUsername())
 
@@ -194,16 +190,9 @@ def viewGallery(galleryID):
         URLs[count] = photo.photoURL
         count += 1
     print(URLs)
-    return render_template('indvGallery.html',
-                           URLs = URLs, 
-                           title = gallery['title'], 
-                           description = gallery['description'], 
-                           numPhotos = gallery['numPhotos'], 
-                           dateCreated = gallery['dateCreated'], 
-                           dateLastEdited = gallery['dateLastEdited'], 
-                           username = users[gallery['userId']]["username"])
+    return render_template('indvGallery.html', URLs = URLs, title = gallery['title'], description = gallery['description'], numPhotos = gallery['numPhotos'], dateCreated = gallery['dateCreated'], dateLastEdited = gallery['dateLastEdited'], username = users[gallery['userId']]["username"], loggedIn = isLoggedIn())
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route("/login", methods=['GET', 'POST'])
 def login():
     form = loginForm()
     if form.validate_on_submit():
@@ -233,6 +222,16 @@ def register():
             return redirect('/')
     else:
         return render_template('register.html', form = form, invalidEmail = False)
+
+@app.route("/addGallery")
+def addGallery():
+    return render_template("addGallery.html", loggedIn = isLoggedIn())
+
+
+with app.app_context():
+    users = getUsers()
+    galleries = getGalleries()
+    photos = getPhotos()
 
 if __name__ == '__main__':
     app.run(debug=True)

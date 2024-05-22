@@ -18,6 +18,25 @@
     padding-top: 10px;
 }
 
+/* for login message */
+.loginReqMsg{
+    width: 50%;
+    margin: auto;
+    background-color: var(--darkBackground);
+    padding: 10px;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.mainMessage{
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+.loginLinks{
+    font-size: 1.1em;
+}
+
 /* for home page */
 #galleries{
     display:grid;
