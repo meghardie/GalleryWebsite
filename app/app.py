@@ -1,15 +1,18 @@
 from flask import Flask, render_template, url_for, session, redirect, request
+from flask_bootstrap import Bootstrap
+from flask_session import Session
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, HiddenField, PasswordField
-from wtforms.validators import ValidationError, DataRequired
+from flask_wtf.file import FileAllowed
+from wtforms import StringField, SubmitField, HiddenField, PasswordField, TextAreaField, MultipleFileField
+from wtforms.validators import ValidationError, DataRequired, Length
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import update
-from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
-from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.datastructures import FileStorage
+from werkzeug.utils import secure_filename
 from functools import wraps
-import datetime
+import datetime, base64
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my website password'
@@ -200,6 +203,12 @@ class settingsForm(FlaskForm):
     password2 = PasswordField("Confirm your new password: ", validators = [updatePasswordCheck])
     submit = SubmitField("Update details")
 
+class createGalleryForm(FlaskForm):
+    title = StringField('Gallery Title: ', validators=[containsData, Length(max=100)])
+    description = TextAreaField('Gallery Description: ', validators=[containsData])
+    photos = MultipleFileField('Add up to 10 photos for your gallery: ', validators=[DataRequired(), FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!'), Length(max=10, message="You can upload a maximum of 10 photos.")])
+    submit = SubmitField("Preview Gallery")
+
 @app.route("/")
 def homePage():
     return render_template('index.html', galleries = galleries, photos = photos, users = users, loggedIn = isLoggedIn(), username = getCurrentUsername())
@@ -256,13 +265,28 @@ def register():
     else:
         return render_template('register.html', form = form, invalidEmail = False)
 
-@app.route("/addGallery")
+@app.route("/addGallery", methods = ['GET', 'POST'])
 def addGallery():
+    createGalleryform = createGalleryForm()
     if isLoggedIn():
         username = getCurrentUsername()
     else:
         username = None
-    return render_template("addGallery.html", loggedIn = isLoggedIn(), currentDate = datetime.date.today(), username = username)
+    if createGalleryform.validate_on_submit():
+        print("Valid form")
+        title = createGalleryform.title.data
+        description = createGalleryform.description.data
+        data = request.files.getlist('photos')
+        images = []
+        for photo in data:
+            print("in for loop")
+            if isinstance(photo, FileStorage):
+                content = base64.b64encode(photo.read()).decode('utf-8')
+                images.append({"filename": secure_filename(photo.filename), "content": content, "contentType": photo.content_type})
+        return render_template("galleryPreview.html", images = images)
+    else:
+        print("Invalid form")
+        return render_template("addGallery.html", loggedIn = isLoggedIn(), currentDate = datetime.date.today(), username = username, form = createGalleryform, images = [])
 
 @app.route("/accountSettings", methods = ['GET', 'POST'])
 def settings():
