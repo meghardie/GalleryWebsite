@@ -70,34 +70,32 @@
                 file = files[i]
 
                 if (file.type.startsWith('image/')) {
-                    let reader = new FileReader()
+                    reader = new FileReader()
                     
                     reader.onload = function(e) {
+                        console.log("adding image")
                         currentFiles.push({'filename': file.name, 'data': e.target.result})
-                        photoPreview.innerHTML = ""
-                        for(let i = 0; i < currentFiles.length; i++){
-                            item = currentFiles[i]
-                            div = document.createElement("div")
-                            div.className = "photoPreviewGridItem"
-                            div.id = imgIDs.toString()
-                            img = document.createElement("img")
-                            img.className = "addToGalleryPhoto"
-                            img.src = item.data
-                            cross = document.createElement("img")
-                            cross.src = "{{ url_for('static', filename = 'delete.png') }}"
-                            cross.className = "deletePhotoButton"
-                            cross.id = "cross" + imgIDs
-                            cross.addEventListener("click", function(){ deleteImage(this.id)})
-                            div.appendChild(img)
-                            div.appendChild(cross)
-                            photoPreview.appendChild(div)
-                            imgIDs ++;
+                        div = document.createElement("div")
+                        div.className = "photoPreviewGridItem"
+                        div.id = imgIDs.toString()
+                        img = document.createElement("img")
+                        img.className = "addToGalleryPhoto"
+                        img.src = e.target.result
+                        cross = document.createElement("img")
+                        cross.src = "{{ url_for('static', filename = 'delete.png') }}"
+                        cross.className = "deletePhotoButton"
+                        cross.id = "cross" + imgIDs
+                        cross.addEventListener("click", function(){ deleteImage(this.id)})
+                        div.appendChild(img)
+                        div.appendChild(cross)
+                        photoPreview.appendChild(div)
+                        imgIDs ++;
                         }
                     }
+
                     reader.readAsDataURL(file);
                 }
-            }   
-        })
+            })
 
         function deleteImage(id){
             id = id.substring(5)
