@@ -17,7 +17,7 @@
         Create a Gallery
     </div>
     <form id = "addGalleryForm" method = "post" enctype="multipart/form-data">
-        {{ form.csrf_token }}
+        {{ form.csrf_token }}{{form.photos}}
         {{form.title.label}} {{form.title}}
         {% if form.title.errors %}
                 <div class="addToGalleryErrors">{% for error in form.title.errors %}{{ error }}{% endfor %}</div>
@@ -28,9 +28,9 @@
                 <div class="addToGalleryErrors">{% for error in form.description.errors %}{{ error }}{% endfor %}</div>
         {% endif %}
         <br>
-        {{form.photos.label}} {{form.photos}}
-        {% if form.photos.errors %}
-                <div class="addToGalleryErrors">{% for error in form.photos.errors %}{{ error }}{% endfor %}</div>
+        {{form.addPhoto.label}} {{form.addPhoto}}
+        {% if form.addPhoto.errors %}
+                <div class="addToGalleryErrors">{% for error in form.addPhoto.errors %}{{ error }}{% endfor %}</div>
         {% endif %}
         <div id = "addPhotosError"></div>
         <div id = "photosToAddPreview"></div>
@@ -63,10 +63,16 @@
     <script>
         currentFiles = []
         imgIDs = 0
-        document.getElementById('photos').addEventListener('change', function(event) {
-            files = document.getElementById("photos").files
+        document.getElementById('addPhoto').addEventListener('change', function(event) {
+            filenames = []
+            files = document.getElementById("addPhoto").files
+            for (let i = 0; i < files.length; i++){
+                file = files[i]
+                filenames.push(file.name)
+            }
             test =  document.getElementById("test")
             photoPreview = document.getElementById("photosToAddPreview")
+            fileNum = 0
             for (let i = 0; i < files.length; i++){
                 file = files[i]
 
@@ -76,7 +82,7 @@
                     reader.onload = function(e) {
                         if (currentFiles.length < 10){
                             document.getElementById("addPhotosError").innerHTML = ""
-                            currentFiles.push({'filename': file.name, 'data': e.target.result})
+                            currentFiles.push({'filename': filenames[fileNum], 'data': e.target.result})
                             div = document.createElement("div")
                             div.className = "photoPreviewGridItem"
                             div.id = imgIDs.toString()
@@ -92,15 +98,19 @@
                             div.appendChild(cross)
                             photoPreview.appendChild(div)
                             imgIDs ++;
+                            fileNum ++;
                         }
                         else{
                             document.getElementById("addPhotosError").innerHTML = "10 photos max!"
                         }
                     }
-                }
-
-                    reader.readAsDataURL(file);
+                    reader.readAsDataURL(file)
+                }    
             }
+        })
+
+        document.getElementById('addGalleryForm').addEventListener('submit', function(event) {
+            document.getElementById("photos").value = JSON.stringify(currentFiles)
         })
 
         function deleteImage(id){

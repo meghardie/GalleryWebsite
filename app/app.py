@@ -207,8 +207,9 @@ class settingsForm(FlaskForm):
 class createGalleryForm(FlaskForm):
     title = StringField('Gallery Title: ', validators=[containsData, Length(max=100)])
     description = TextAreaField('Gallery Description: ', validators=[containsData])
-    photos = MultipleFileField('Add up to 10 photos for your gallery: ', validators=[DataRequired(), FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!'), Length(max=10, message="You can upload a maximum of 10 photos.")])
-    submit = SubmitField("Preview Gallery")
+    addPhoto = MultipleFileField('Add up to 10 photos for your gallery: ')
+    photos = HiddenField()
+    submit = SubmitField("Create Gallery")
 
 @app.route("/")
 def homePage():
@@ -268,28 +269,25 @@ def register():
 
 @app.route("/addGallery", methods = ['GET', 'POST'])
 def addGallery():
-    createGalleryform = createGalleryForm()
+    form = createGalleryForm()
     if isLoggedIn():
         username = getCurrentUsername()
     else:
         username = None
-    if createGalleryform.validate_on_submit():
-        print("Valid form")
-        title = createGalleryform.title.data
-        description = createGalleryform.description.data
-        data = request.files.getlist('photos')
-        images = {}
-        count = 0
-        for photo in data:
-            print("in for loop")
-            if isinstance(photo, FileStorage):
-                content = base64.b64encode(photo.read()).decode('utf-8')
-                images[count] = ({"filename": secure_filename(photo.filename), "content": content, "contentType": photo.content_type})
-                count += 1
-        return render_template("galleryPreview.html", currentDate = datetime.date.today(), images = images, username = username, description = description, title = title)
+    if form.validate_on_submit():
+        print("valid form")
+        title = form.title.data
+        description = form.description.data
+        photos = json.loads(form.photos.data)
+        for i in range (len(photos)):
+            item = photos[i]
+            print(item['filename'])
+        print(title)
+        print(description)
+        return redirect(url_for("homePage"))
     else:
         print("Invalid form")
-        return render_template("addGallery.html", loggedIn = isLoggedIn(), form = createGalleryform, currentDate = datetime.date.today(), username = username)
+        return render_template("addGallery.html", loggedIn = isLoggedIn(), form = form, currentDate = datetime.date.today(), username = username)
 
 @app.route("/accountSettings", methods = ['GET', 'POST'])
 def settings():
