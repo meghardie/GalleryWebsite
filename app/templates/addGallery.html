@@ -20,12 +20,12 @@
         {{ form.csrf_token }}{{form.photos}}
         {{form.title.label}} {{form.title}}
         {% if form.title.errors %}
-                <div class="addToGalleryErrors">{% for error in form.title.errors %}{{ error }}{% endfor %}</div>
+                <div class="addToGalleryErrors" id = "titleErrors">{% for error in form.title.errors %}{{ error }}{% endfor %}</div>
         {% endif %}
         <br>
         {{form.description.label}} {{form.description}}
         {% if form.description.errors %}
-                <div class="addToGalleryErrors">{% for error in form.description.errors %}{{ error }}{% endfor %}</div>
+                <div class="addToGalleryErrors" id = "descErrors">{% for error in form.description.errors %}{{ error }}{% endfor %}</div>
         {% endif %}
         <br>
         {{form.addPhoto.label}} {{form.addPhoto}}
@@ -39,10 +39,11 @@
     </form>
     <div id = "test"></div>
 
-    <div id = galleryPreview>
+    <div id = "galleryPreview">
         {% set dateCreated = currentDate %}
         {% set dateLastEdited = currentDate %}
         <div class = "pageTitle" >Gallery Preview<br></div>
+        <div class = "pageTitle" id = "previewTitle"></div>
         <div class = "images">
             <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
             <img id = "photo">
@@ -54,7 +55,7 @@
                 Date Last Edited: {{dateLastEdited.strftime('%d-%m-%Y')}}
             </div> 
             <div class = "galleryUser">{{username}}</div>
-            <div class = "galleryDescription">
+            <div class = "galleryDescription" id = "previewDesc">
                 {{description}}
             </div>
         </div>
@@ -109,9 +110,35 @@
             }
         })
 
-        document.getElementById('addGalleryForm').addEventListener('submit', function(event) {
-            document.getElementById("photos").value = JSON.stringify(currentFiles)
+        document.getElementById("title").addEventListener('change', function(event){
+            let currentTitle = document.getElementById("title").value
+            document.getElementById("previewTitle").innerHTML = currentTitle
+
         })
+
+        document.getElementById("description").addEventListener('change', function(event){
+            let currentDesc = document.getElementById("description").value
+            document.getElementById("previewDesc").innerHTML = currentDesc
+        })
+
+        document.getElementById('addGalleryForm').addEventListener('submit', function(event) {
+            if(document.getElementById('title').value.length == 0){
+                document.getElementById("titleErrors").innerHTML = "Please fill in this field"
+                event.preventDefault()
+            }
+            else if(document.getElementById('description').value.length == 0){
+                document.getElementById("descErrors").innerHTML = "Please fill in this field"
+                event.preventDefault()
+            }
+            else if (currentFiles.length == 0){
+                document.getElementById("addPhotosError").innerHTML = "Add at least 1 photo to create a gallery!"
+                event.preventDefault()
+            }
+            else{
+                document.getElementById("photos").value = JSON.stringify(currentFiles)
+            }
+        })
+
 
         function deleteImage(id){
             id = id.substring(5)
