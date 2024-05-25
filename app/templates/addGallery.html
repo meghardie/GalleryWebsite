@@ -28,11 +28,12 @@
                 <div class="addToGalleryErrors">{% for error in form.description.errors %}{{ error }}{% endfor %}</div>
         {% endif %}
         <br>
-        <div id = "photosToAddPreview"></div>
         {{form.photos.label}} {{form.photos}}
         {% if form.photos.errors %}
                 <div class="addToGalleryErrors">{% for error in form.photos.errors %}{{ error }}{% endfor %}</div>
         {% endif %}
+        <div id = "addPhotosError"></div>
+        <div id = "photosToAddPreview"></div>
         <br>
         {{form.submit}}
     </form>
@@ -73,29 +74,34 @@
                     reader = new FileReader()
                     
                     reader.onload = function(e) {
-                        console.log("adding image")
-                        currentFiles.push({'filename': file.name, 'data': e.target.result})
-                        div = document.createElement("div")
-                        div.className = "photoPreviewGridItem"
-                        div.id = imgIDs.toString()
-                        img = document.createElement("img")
-                        img.className = "addToGalleryPhoto"
-                        img.src = e.target.result
-                        cross = document.createElement("img")
-                        cross.src = "{{ url_for('static', filename = 'delete.png') }}"
-                        cross.className = "deletePhotoButton"
-                        cross.id = "cross" + imgIDs
-                        cross.addEventListener("click", function(){ deleteImage(this.id)})
-                        div.appendChild(img)
-                        div.appendChild(cross)
-                        photoPreview.appendChild(div)
-                        imgIDs ++;
+                        if (currentFiles.length < 10){
+                            document.getElementById("addPhotosError").innerHTML = ""
+                            currentFiles.push({'filename': file.name, 'data': e.target.result})
+                            div = document.createElement("div")
+                            div.className = "photoPreviewGridItem"
+                            div.id = imgIDs.toString()
+                            img = document.createElement("img")
+                            img.className = "addToGalleryPhoto"
+                            img.src = e.target.result
+                            cross = document.createElement("img")
+                            cross.src = "{{ url_for('static', filename = 'delete.png') }}"
+                            cross.className = "deletePhotoButton"
+                            cross.id = "cross" + imgIDs
+                            cross.addEventListener("click", function(){ deleteImage(this.id)})
+                            div.appendChild(img)
+                            div.appendChild(cross)
+                            photoPreview.appendChild(div)
+                            imgIDs ++;
+                        }
+                        else{
+                            document.getElementById("addPhotosError").innerHTML = "10 photos max!"
                         }
                     }
+                }
 
                     reader.readAsDataURL(file);
-                }
-            })
+            }
+        })
 
         function deleteImage(id){
             id = id.substring(5)

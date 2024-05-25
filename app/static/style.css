@@ -234,6 +234,7 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-gap: 5px;
+    margin-top: 10px;
 }
 
 .photoPreviewGridItem{
@@ -253,4 +254,11 @@
     position: absolute;
     right: 5px;
     top: 5px;
+}
+
+#addPhotosError{
+    font-size: 1em;
+    color: red;
+    margin: auto;
+    font-weight: bold;
 }
