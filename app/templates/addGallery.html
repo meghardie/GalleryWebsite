@@ -62,8 +62,28 @@
     </div>
 
     <script>
+        function deleteImage(id){
+            id = id.substring(5)
+            div = document.getElementById(id)
+            if (div){
+                div.remove()
+            }
+        }
+
+        function nextPhoto(change){
+            numPhotos = currentFiles.length
+            if (numPhotos > 1){
+                currentPhoto = (currentPhoto + change + numPhotos) % numPhotos
+                img = document.getElementById("photo")
+                img.src = currentFiles[currentPhoto].data
+                console.log("changed src")
+            }
+        }
+
         currentFiles = []
         imgIDs = 0
+        currentPhoto = 0
+
         document.getElementById('addPhoto').addEventListener('change', function(event) {
             filenames = []
             files = document.getElementById("addPhoto").files
@@ -74,6 +94,11 @@
             test =  document.getElementById("test")
             photoPreview = document.getElementById("photosToAddPreview")
             fileNum = 0
+            let firstPhotos = false
+            if (currentFiles.length == 0){
+                firstPhotos = true
+            }
+            console.log(firstPhotos)
             for (let i = 0; i < files.length; i++){
                 file = files[i]
 
@@ -100,6 +125,13 @@
                             photoPreview.appendChild(div)
                             imgIDs ++;
                             fileNum ++;
+
+                            if ((firstPhotos == true) && (currentFiles.length != 0)){
+                                img = document.getElementById("photo")
+                                img.src = currentFiles[0].data
+                                console.log("changed src")
+                                firstPhotos = false
+                            }
                         }
                         else{
                             document.getElementById("addPhotosError").innerHTML = "10 photos max!"
@@ -113,7 +145,6 @@
         document.getElementById("title").addEventListener('change', function(event){
             let currentTitle = document.getElementById("title").value
             document.getElementById("previewTitle").innerHTML = currentTitle
-
         })
 
         document.getElementById("description").addEventListener('change', function(event){
@@ -139,14 +170,7 @@
             }
         })
 
-
-        function deleteImage(id){
-            id = id.substring(5)
-            div = document.getElementById(id)
-            if (div){
-                div.remove()
-            }
-        }
+        
     </script>
     {% endif %}
 {% endblock %}
