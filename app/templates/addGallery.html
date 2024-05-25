@@ -61,6 +61,7 @@
 
     <script>
         currentFiles = []
+        imgIDs = 0
         document.getElementById('photos').addEventListener('change', function(event) {
             files = document.getElementById("photos").files
             test =  document.getElementById("test")
@@ -77,19 +78,34 @@
                         for(let i = 0; i < currentFiles.length; i++){
                             item = currentFiles[i]
                             div = document.createElement("div")
+                            div.className = "photoPreviewGridItem"
+                            div.id = imgIDs.toString()
                             img = document.createElement("img")
                             img.className = "addToGalleryPhoto"
                             img.src = item.data
-                            img.style.width = "100%"
+                            cross = document.createElement("img")
+                            cross.src = "{{ url_for('static', filename = 'delete.png') }}"
+                            cross.className = "deletePhotoButton"
+                            cross.id = "cross" + imgIDs
+                            cross.addEventListener("click", function(){ deleteImage(this.id)})
                             div.appendChild(img)
+                            div.appendChild(cross)
                             photoPreview.appendChild(div)
+                            imgIDs ++;
                         }
-                    };
-
+                    }
                     reader.readAsDataURL(file);
                 }
             }   
         })
+
+        function deleteImage(id){
+            id = id.substring(5)
+            div = document.getElementById(id)
+            if (div){
+                div.remove()
+            }
+        }
     </script>
     {% endif %}
 {% endblock %}

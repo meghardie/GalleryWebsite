@@ -235,3 +235,22 @@
     grid-template-columns: repeat(5, 1fr);
     grid-gap: 5px;
 }
+
+.photoPreviewGridItem{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.addToGalleryPhoto{
+    align-self: center;
+    max-width: 100%;
+    max-height: 75px;
+}
+
+.deletePhotoButton{
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
