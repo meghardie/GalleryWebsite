@@ -18,9 +18,21 @@
     </div>
     <form id = "addGalleryForm" method = "post" enctype="multipart/form-data">
         {{ form.csrf_token }}
-        {{form.title.label}} {{form.title}}<br>
-        {{form.description.label}} {{form.description}}<br>
-        {{form.photos.label}} {{form.photos}}<br>
+        {{form.title.label}} {{form.title}}
+        {% if form.title.errors %}
+                <div class="addToGalleryErrors">{% for error in form.title.errors %}{{ error }}{% endfor %}</div>
+        {% endif %}
+        <br>
+        {{form.description.label}} {{form.description}}
+        {% if form.description.errors %}
+                <div class="addToGalleryErrors">{% for error in form.description.errors %}{{ error }}{% endfor %}</div>
+        {% endif %}
+        <br>
+        {{form.photos.label}} {{form.photos}}
+        {% if form.photos.errors %}
+                <div class="addToGalleryErrors">{% for error in form.photos.errors %}{{ error }}{% endfor %}</div>
+        {% endif %}
+        <br>
         {{form.submit}}
     </div>
     {% endif %}

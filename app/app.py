@@ -283,10 +283,10 @@ def addGallery():
             if isinstance(photo, FileStorage):
                 content = base64.b64encode(photo.read()).decode('utf-8')
                 images.append({"filename": secure_filename(photo.filename), "content": content, "contentType": photo.content_type})
-        return render_template("galleryPreview.html", images = images)
+        return render_template("galleryPreview.html", currentDate = datetime.date.today(), images = images, username = username)
     else:
         print("Invalid form")
-        return render_template("addGallery.html", loggedIn = isLoggedIn(), currentDate = datetime.date.today(), username = username, form = createGalleryform, images = [])
+        return render_template("addGallery.html", loggedIn = isLoggedIn(), form = createGalleryform)
 
 @app.route("/accountSettings", methods = ['GET', 'POST'])
 def settings():
