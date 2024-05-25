@@ -228,3 +228,10 @@
     color: red;
     font-size: 1em;
 }
+
+#photosToAddPreview{
+    width: 90%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 5px;
+}

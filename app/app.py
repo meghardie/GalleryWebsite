@@ -289,7 +289,7 @@ def addGallery():
         return render_template("galleryPreview.html", currentDate = datetime.date.today(), images = images, username = username, description = description, title = title)
     else:
         print("Invalid form")
-        return render_template("addGallery.html", loggedIn = isLoggedIn(), form = createGalleryform)
+        return render_template("addGallery.html", loggedIn = isLoggedIn(), form = createGalleryform, currentDate = datetime.date.today(), username = username)
 
 @app.route("/accountSettings", methods = ['GET', 'POST'])
 def settings():

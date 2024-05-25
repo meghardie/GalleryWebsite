@@ -28,12 +28,68 @@
                 <div class="addToGalleryErrors">{% for error in form.description.errors %}{{ error }}{% endfor %}</div>
         {% endif %}
         <br>
+        <div id = "photosToAddPreview"></div>
         {{form.photos.label}} {{form.photos}}
         {% if form.photos.errors %}
                 <div class="addToGalleryErrors">{% for error in form.photos.errors %}{{ error }}{% endfor %}</div>
         {% endif %}
         <br>
         {{form.submit}}
+    </form>
+    <div id = "test"></div>
+
+    <div id = galleryPreview>
+        {% set dateCreated = currentDate %}
+        {% set dateLastEdited = currentDate %}
+        <div class = "pageTitle" >Gallery Preview<br></div>
+        <div class = "images">
+            <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
+            <img id = "photo">
+            <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" class = "rightArrow" onclick = "nextPhoto(1)">
+        </div>
+        <div class = "galleryDetails">
+            <div class = "galleryDates">
+                Date Created: {{dateCreated.strftime('%d-%m-%Y')}}<br>
+                Date Last Edited: {{dateLastEdited.strftime('%d-%m-%Y')}}
+            </div> 
+            <div class = "galleryUser">{{username}}</div>
+            <div class = "galleryDescription">
+                {{description}}
+            </div>
+        </div>
     </div>
+
+    <script>
+        currentFiles = []
+        document.getElementById('photos').addEventListener('change', function(event) {
+            files = document.getElementById("photos").files
+            test =  document.getElementById("test")
+            photoPreview = document.getElementById("photosToAddPreview")
+            for (let i = 0; i < files.length; i++){
+                file = files[i]
+
+                if (file.type.startsWith('image/')) {
+                    let reader = new FileReader()
+                    
+                    reader.onload = function(e) {
+                        currentFiles.push({'filename': file.name, 'data': e.target.result})
+                        photoPreview.innerHTML = ""
+                        for(let i = 0; i < currentFiles.length; i++){
+                            item = currentFiles[i]
+                            div = document.createElement("div")
+                            img = document.createElement("img")
+                            img.className = "addToGalleryPhoto"
+                            img.src = item.data
+                            img.style.width = "100%"
+                            div.appendChild(img)
+                            photoPreview.appendChild(div)
+                        }
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            }   
+        })
+    </script>
     {% endif %}
 {% endblock %}

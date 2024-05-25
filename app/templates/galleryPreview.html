@@ -17,27 +17,6 @@
         {% set dateLastEdited = currentDate %}
         {% set numPhotos = images|length %}
 
-        <script>
-            photoNum = 0
-            photos = JSON.parse("{{images | tojson | safe }}")
-            console.log(photos)
-            numPhotos = "{{ numPhotos }}"
-    
-            function nextPhoto(change){
-                console.log(photos)
-                console.log(photoNum)
-                photoNum = (photoNum + change + numPhotos) % parseInt(numPhotos)
-                console.log(photoNum)
-                key = photoNum
-                console.log(key)
-                image = photos[key]
-                console.log(image)
-                document.getElementById("photo").src = "data:" + image['contentType'] + ";base64," + image['content']
-            }
-            console.log(photoNum)
-            console.log(photos)
-        </script>
-
         <div id = galleryPreview>
             <div class = "pageTitle" >Gallery Preview<br></div>
             <div class = "images">
@@ -58,5 +37,26 @@
             </div>
         </div>
         {% endif %}
+
+        <script>
+            photoNum = 0
+            photos = JSON.parse("{{images | tojson | safe }}")
+            console.log(photos)
+            numPhotos = "{{ numPhotos }}"
+    
+            function nextPhoto(change){
+                console.log(photos)
+                console.log(photoNum)
+                photoNum = (photoNum + change + numPhotos) % parseInt(numPhotos)
+                console.log(photoNum)
+                key = photoNum
+                console.log(key)
+                image = photos[key]
+                console.log(image)
+                document.getElementById("photo").src = "data:" + image['contentType'] + ";base64," + image['content']
+            }
+            console.log(photoNum)
+            console.log(photos)
+        </script>
 
 {% endblock %}
