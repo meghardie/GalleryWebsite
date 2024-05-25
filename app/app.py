@@ -13,6 +13,7 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from functools import wraps
 import datetime, base64
+import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my website password'
@@ -277,13 +278,15 @@ def addGallery():
         title = createGalleryform.title.data
         description = createGalleryform.description.data
         data = request.files.getlist('photos')
-        images = []
+        images = {}
+        count = 0
         for photo in data:
             print("in for loop")
             if isinstance(photo, FileStorage):
                 content = base64.b64encode(photo.read()).decode('utf-8')
-                images.append({"filename": secure_filename(photo.filename), "content": content, "contentType": photo.content_type})
-        return render_template("galleryPreview.html", currentDate = datetime.date.today(), images = images, username = username)
+                images[count] = ({"filename": secure_filename(photo.filename), "content": content, "contentType": photo.content_type})
+                count += 1
+        return render_template("galleryPreview.html", currentDate = datetime.date.today(), images = images, username = username, description = description, title = title)
     else:
         print("Invalid form")
         return render_template("addGallery.html", loggedIn = isLoggedIn(), form = createGalleryform)

@@ -4,51 +4,59 @@
 {% block title %}Create a Gallery{% endblock %}
 
 {% block content %}
-    <!-- {% set dateCreated = currentDate %}
-    {% set dateLastEdited = currentDate %}
-    {% set title = "" %}
-    {% set description = "" %}
-    {% set photos = [] %}
-    {% set numPhotos = 0 %}
-    <div id = galleryPreview>
-        <div class = "pageTitle" >Gallery Preview<br></div>
-        <div class = "images">
-            <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
-            <img src = "{{photos[0]}}" style = "height: 500px" id = "photo">
-            <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" class = "rightArrow" onclick = "nextPhoto(1)">
-        </div>
-        <div class = "galleryDetails">
-            <div class = "galleryDates">
-                Date Created: {{dateCreated.strftime('%d-%m-%Y')}}<br>
-                Date Last Edited: {{dateLastEdited.strftime('%d-%m-%Y')}}
-            </div> 
-            <div class = "galleryUser">{{username}}</div>
-            <div class = "galleryDescription">
-                {{description}}
+    {% if loggedIn == False %}
+        <div class = "loginReqMsg">
+            <p class = "mainMessage">You must be logged in to access this page!</p>
+            <div class = "loginLinks">
+                Log in <a href = "{{ url_for('login') }}">here</a><br>
+                Don't have an account? Register <a href = "{{ url_for('register') }}">here</a>
             </div>
         </div>
-    </div> -->
-    {% for file in images %}
-        Filename: {{ file.filename }}<br>
-        Content Type: {{ file.contentType }}<br>
-        <img src="data:{{ file.contentType }};base64,{{ file.content }}" alt="{{ file.filename }}"><br><br>
-    {% endfor %}
+    {% else %}
+        {% set dateCreated = currentDate %}
+        {% set dateLastEdited = currentDate %}
+        {% set numPhotos = images|length %}
 
-    <script>
-        photoNum = 0
-        photos = []
-
-        function nextPhoto(change){
-            console.log("Changing photo")
-            photoNum = (photoNum + change) % parseInt("{{numPhotos}}")
+        <script>
+            photoNum = 0
+            photos = JSON.parse("{{images | tojson | safe }}")
+            console.log(photos)
+            numPhotos = "{{ numPhotos }}"
+    
+            function nextPhoto(change){
+                console.log(photos)
+                console.log(photoNum)
+                photoNum = (photoNum + change + numPhotos) % parseInt(numPhotos)
+                console.log(photoNum)
+                key = photoNum
+                console.log(key)
+                image = photos[key]
+                console.log(image)
+                document.getElementById("photo").src = "data:" + image['contentType'] + ";base64," + image['content']
+            }
             console.log(photoNum)
-            key = photoNum.toString()
-            console.log(key)
-            console.log(photos[key])
-            document.getElementById("photo").src = photos[key]
-        }
+            console.log(photos)
+        </script>
 
-        console.log(photoNum)
-        console.log(photos)
-    </script>
+        <div id = galleryPreview>
+            <div class = "pageTitle" >Gallery Preview<br></div>
+            <div class = "images">
+                {% set image1src = "data:" + images[0]['contentType'] + ";base64," + images[0]['content'] %}
+                <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
+                <img src = "{{image1src}}" style = "height: 500px" id = "photo">
+                <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" class = "rightArrow" onclick = "nextPhoto(1)">
+            </div>
+            <div class = "galleryDetails">
+                <div class = "galleryDates">
+                    Date Created: {{dateCreated.strftime('%d-%m-%Y')}}<br>
+                    Date Last Edited: {{dateLastEdited.strftime('%d-%m-%Y')}}
+                </div> 
+                <div class = "galleryUser">{{username}}</div>
+                <div class = "galleryDescription">
+                    {{description}}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
 {% endblock %}
