@@ -11,6 +11,8 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
+from PIL import Image
+from io import BytesIO
 from functools import wraps
 import datetime, base64, json, os
 
@@ -20,8 +22,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.sqlite3'
 app.config['SQLALCHEMY_BINDS'] = {"users": 'sqlite:///data.sqlite3', "photos": 'sqlite:///data.sqlite3'}
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.config['UPLOAD_FOLDER'] = 'static/galleries'
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  #16 MB
+app.config['UPLOAD_FOLDER'] = 'static\galleries'
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  #16 MB
 
 Session(app)
 bootstrap = Bootstrap(app)
@@ -151,8 +153,8 @@ def isLoggedIn():
         session.modified = True
     return session['loggedIn']
 
-def getUsers():
-    if 'users' not in globals():
+def getUsers(refresh = False):
+    if (('users' not in globals())) or (refresh == True):
         result = User.query.all()
         global users
         users = {}
@@ -168,8 +170,8 @@ def getUsers():
             }
     return users
 
-def getGalleries():
-    if 'galleries' not in globals():
+def getGalleries(refresh = False):
+    if ('galleries' not in globals()) or (refresh == True):
         result = Gallery.query.all()
         global galleries 
         galleries = {}
@@ -186,8 +188,8 @@ def getGalleries():
             }
     return galleries
 
-def getPhotos():
-    if 'photos' not in globals():
+def getPhotos(refresh = False):
+    if ('photos' not in globals()) or (refresh == True):
         result = Photo.query.all()
         global photos 
         photos = {}
@@ -232,7 +234,6 @@ class createGalleryForm(FlaskForm):
 
 @app.route("/")
 def homePage():
-    galleries = getGalleries()
     return render_template('index.html', galleries = galleries, photos = photos, users = users, loggedIn = isLoggedIn(), username = getCurrentUsername())
 
 @app.route("/viewGallery<int:galleryID>")
@@ -282,7 +283,7 @@ def register():
             session['loggedIn'] = True
             session.modified = True
             global users
-            users = User.query.all()
+            users = getUsers(True)
             return redirect(url_for('homePage'))
     else:
         return render_template('register.html', form = form, invalidEmail = False)
@@ -304,30 +305,38 @@ def addGallery():
         for i in range (len(photos)):
             item = photos[i]
             filename = secure_filename(item['filename'])
+            data = item['data']
             print(filename)
             if filename == '' or galleryId == '':
                 return 'No selected file or gallery ID'
             
             if item:
-                
                 galleryFolder = os.path.join(app.config['UPLOAD_FOLDER'], str(galleryId))
-    
-                data = base64.b64decode(item['data'])
-                
-                # Create the gallery folder if it doesn't exist
                 if not os.path.exists(galleryFolder):
                     os.makedirs(galleryFolder)
                 filePath = os.path.join(galleryFolder, filename)
-
-
-                with open(filePath, 'wb') as f:
-                    f.write(data)
-
-                newPhoto = Photo.addPhoto(galleryId, filePath, filePath)
+    
+                if ',' in data:
+                    data= data.split(',')[1]
                 
-        photos = getPhotos()
+                data = base64.b64decode(data)
+                image = Image.open(BytesIO(data))
+                image.save(filePath)
+
+                thumbnail = Image.open(filePath)
+                thumbnailHeight = 125
+                ratio = thumbnail.width / thumbnail.height
+                newWidth = int(thumbnailHeight * ratio)
+                thumbnail.thumbnail((newWidth, thumbnailHeight))
+                fileExtension = os.path.splitext(filename)[1]
+                thumbnailPath = os.path.join(galleryFolder, ("thumbnail" + str(i) + fileExtension))
+                thumbnail.save(thumbnailPath)
+
+                newPhoto = Photo.addPhoto(galleryId, filePath, thumbnailPath)
+                
+        photos = getPhotos(True)
         global galleries
-        galleries = getGalleries()
+        galleries = getGalleries(True)
         return redirect(url_for("homePage"))
     else:
         print("Invalid form")
@@ -356,14 +365,14 @@ def settings():
                 db.session.execute(update(User).where(User.id == userId).values(passwordHash = generate_password_hash(form.password1.data)))
                 db.session.commit()
             global users
-            users = User.query.all()
+            users = getUsers(True)
             return redirect(url_for('homePage'))
     return render_template("settings.html", loggedIn = isLoggedIn(), form = form)
 
-# with app.app_context():
-#     users = getUsers()
-#     galleries = getGalleries()
-#     photos = getPhotos()
+with app.app_context():
+    users = getUsers()
+    galleries = getGalleries()
+    photos = getPhotos()
 
 if __name__ == '__main__':
     app.run(debug=True)

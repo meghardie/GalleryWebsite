@@ -107,7 +107,7 @@
                     reader.onload = function(e) {
                         if (currentFiles.length < 10){
                             document.getElementById("addPhotosError").innerHTML = ""
-                            currentFiles.push({'filename': filenames[fileNum], 'data': e.target.result.split(',')[1]})
+                            currentFiles.push({'filename': filenames[fileNum], 'data': e.target.result})
                             div = document.createElement("div")
                             div.className = "photoPreviewGridItem"
                             div.id = imgIDs.toString()
