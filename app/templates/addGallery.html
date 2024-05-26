@@ -98,7 +98,6 @@
             if (currentFiles.length == 0){
                 firstPhotos = true
             }
-            console.log(firstPhotos)
             for (let i = 0; i < files.length; i++){
                 file = files[i]
 
@@ -108,7 +107,7 @@
                     reader.onload = function(e) {
                         if (currentFiles.length < 10){
                             document.getElementById("addPhotosError").innerHTML = ""
-                            currentFiles.push({'filename': filenames[fileNum], 'data': e.target.result})
+                            currentFiles.push({'filename': filenames[fileNum], 'data': e.target.result.split(',')[1]})
                             div = document.createElement("div")
                             div.className = "photoPreviewGridItem"
                             div.id = imgIDs.toString()
@@ -144,7 +143,7 @@
 
         document.getElementById("title").addEventListener('change', function(event){
             let currentTitle = document.getElementById("title").value
-            document.getElementById("previewTitle").innerHTML = currentTitle
+            document.getElementById("previewGallTitle").innerHTML = currentTitle
         })
 
         document.getElementById("description").addEventListener('change', function(event){

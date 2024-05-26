@@ -12,8 +12,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from functools import wraps
-import datetime, base64
-import json
+import datetime, base64, json, os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my website password'
@@ -21,6 +20,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.sqlite3'
 app.config['SQLALCHEMY_BINDS'] = {"users": 'sqlite:///data.sqlite3', "photos": 'sqlite:///data.sqlite3'}
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+app.config['UPLOAD_FOLDER'] = 'static/galleries'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  #16 MB
+
 Session(app)
 bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
@@ -71,6 +73,16 @@ class Gallery(db.Model):
     description = db.Column(db.Text)
     photos = db.relationship('Photo', backref='gallery')
 
+    @staticmethod
+    def createGallery(userId, numPhotos, title, description):
+        if userId != None:
+            currentDate = datetime.date.today()
+            gallery = Gallery(userId = userId, numPhotos = numPhotos, title = title, dateCreated = currentDate, dateLastEdited = currentDate, description = description)
+            db.session.add(gallery)
+            db.session.commit()
+            return gallery
+        return None
+
 class Photo(db.Model):
     __tablename__ = 'photos'
     __bind_key__ = 'photos'
@@ -78,6 +90,13 @@ class Photo(db.Model):
     galleryId = db.Column(db.Integer, db.ForeignKey(Gallery.id))
     photoURL = db.Column(db.String(32))
     thumbnailURL = db.Column(db.String(32))
+
+    @staticmethod
+    def addPhoto(galleryId, photoURL, thumbnailURL):
+        photo = Photo(galleryId = galleryId, photoURL = photoURL, thumbnailURL = thumbnailURL)
+        db.session.add(photo)
+        db.session.commit()
+        return photo
 
 @lm.user_loader
 def loadUser(id):
@@ -213,6 +232,7 @@ class createGalleryForm(FlaskForm):
 
 @app.route("/")
 def homePage():
+    galleries = getGalleries()
     return render_template('index.html', galleries = galleries, photos = photos, users = users, loggedIn = isLoggedIn(), username = getCurrentUsername())
 
 @app.route("/viewGallery<int:galleryID>")
@@ -279,11 +299,35 @@ def addGallery():
         title = form.title.data
         description = form.description.data
         photos = json.loads(form.photos.data)
+        newGallery = Gallery.createGallery(session.get('userId'), len(photos), title, description)
+        galleryId = newGallery.id
         for i in range (len(photos)):
             item = photos[i]
-            print(item['filename'])
-        print(title)
-        print(description)
+            filename = secure_filename(item['filename'])
+            print(filename)
+            if filename == '' or galleryId == '':
+                return 'No selected file or gallery ID'
+            
+            if item:
+                
+                galleryFolder = os.path.join(app.config['UPLOAD_FOLDER'], str(galleryId))
+    
+                data = base64.b64decode(item['data'])
+                
+                # Create the gallery folder if it doesn't exist
+                if not os.path.exists(galleryFolder):
+                    os.makedirs(galleryFolder)
+                filePath = os.path.join(galleryFolder, filename)
+
+
+                with open(filePath, 'wb') as f:
+                    f.write(data)
+
+                newPhoto = Photo.addPhoto(galleryId, filePath, filePath)
+                
+        photos = getPhotos()
+        global galleries
+        galleries = getGalleries()
         return redirect(url_for("homePage"))
     else:
         print("Invalid form")
@@ -316,10 +360,10 @@ def settings():
             return redirect(url_for('homePage'))
     return render_template("settings.html", loggedIn = isLoggedIn(), form = form)
 
-with app.app_context():
-    users = getUsers()
-    galleries = getGalleries()
-    photos = getPhotos()
+# with app.app_context():
+#     users = getUsers()
+#     galleries = getGalleries()
+#     photos = getPhotos()
 
 if __name__ == '__main__':
     app.run(debug=True)
