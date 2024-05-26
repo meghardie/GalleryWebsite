@@ -229,6 +229,10 @@
     font-size: 1em;
 }
 
+#galleryPreview{
+    width: 60%;
+}
+
 #photosToAddPreview{
     width: 90%;
     display: grid;
@@ -263,6 +267,16 @@
     font-weight: bold;
 }
 
-#previewTitle{
+#previewGallTitle{
     margin-top: 10px;
+}
+
+#previewPhoto{
+    max-width: 80%;
+    max-height: 500px;
+}
+
+#addPhoto input[type=file]{
+    opacity: 0;
+    display: none;
 }

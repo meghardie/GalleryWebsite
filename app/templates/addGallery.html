@@ -28,7 +28,7 @@
                 <div class="addToGalleryErrors" id = "descErrors">{% for error in form.description.errors %}{{ error }}{% endfor %}</div>
         {% endif %}
         <br>
-        {{form.addPhoto.label}} {{form.addPhoto}}
+        <b>Ad up to 10 photos to your galllery</b> {{form.addPhoto}}
         {% if form.addPhoto.errors %}
                 <div class="addToGalleryErrors">{% for error in form.addPhoto.errors %}{{ error }}{% endfor %}</div>
         {% endif %}
@@ -43,10 +43,10 @@
         {% set dateCreated = currentDate %}
         {% set dateLastEdited = currentDate %}
         <div class = "pageTitle" >Gallery Preview<br></div>
-        <div class = "pageTitle" id = "previewTitle"></div>
+        <div class = "pageTitle" id = "previewGallTitle"></div>
         <div class = "images">
             <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
-            <img id = "photo">
+            <img id = "previewPhoto">
             <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" class = "rightArrow" onclick = "nextPhoto(1)">
         </div>
         <div class = "galleryDetails">
@@ -74,7 +74,7 @@
             numPhotos = currentFiles.length
             if (numPhotos > 1){
                 currentPhoto = (currentPhoto + change + numPhotos) % numPhotos
-                img = document.getElementById("photo")
+                img = document.getElementById("previewPhoto")
                 img.src = currentFiles[currentPhoto].data
                 console.log("changed src")
             }
@@ -127,7 +127,7 @@
                             fileNum ++;
 
                             if ((firstPhotos == true) && (currentFiles.length != 0)){
-                                img = document.getElementById("photo")
+                                img = document.getElementById("previewPhoto")
                                 img.src = currentFiles[0].data
                                 console.log("changed src")
                                 firstPhotos = false

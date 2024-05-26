@@ -207,7 +207,7 @@ class settingsForm(FlaskForm):
 class createGalleryForm(FlaskForm):
     title = StringField('Gallery Title: ', validators=[containsData, Length(max=100)])
     description = TextAreaField('Gallery Description: ', validators=[containsData])
-    addPhoto = MultipleFileField('Add up to 10 photos for your gallery: ')
+    addPhoto = MultipleFileField()
     photos = HiddenField()
     submit = SubmitField("Create Gallery")
 
