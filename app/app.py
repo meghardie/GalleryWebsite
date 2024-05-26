@@ -22,7 +22,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.sqlite3'
 app.config['SQLALCHEMY_BINDS'] = {"users": 'sqlite:///data.sqlite3', "photos": 'sqlite:///data.sqlite3'}
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.config['UPLOAD_FOLDER'] = 'static\galleries'
+app.config['UPLOAD_FOLDER'] = 'static/galleries'
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  #16 MB
 
 Session(app)
@@ -311,10 +311,10 @@ def addGallery():
                 return 'No selected file or gallery ID'
             
             if item:
-                galleryFolder = os.path.join(app.config['UPLOAD_FOLDER'], str(galleryId))
+                galleryFolder = (app.config['UPLOAD_FOLDER'] + "/" + str(galleryId))
                 if not os.path.exists(galleryFolder):
                     os.makedirs(galleryFolder)
-                filePath = os.path.join(galleryFolder, filename)
+                filePath = galleryFolder + "/" + filename
     
                 if ',' in data:
                     data= data.split(',')[1]
@@ -329,7 +329,7 @@ def addGallery():
                 newWidth = int(thumbnailHeight * ratio)
                 thumbnail.thumbnail((newWidth, thumbnailHeight))
                 fileExtension = os.path.splitext(filename)[1]
-                thumbnailPath = os.path.join(galleryFolder, ("thumbnail" + str(i) + fileExtension))
+                thumbnailPath = (galleryFolder + "/" + "thumbnail" + str(i) + fileExtension)
                 thumbnail.save(thumbnailPath)
 
                 newPhoto = Photo.addPhoto(galleryId, filePath, thumbnailPath)

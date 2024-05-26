@@ -26,6 +26,7 @@
 
     <script>
         photoNum = 0
+        console.log("{{URLs}}")
         photos = JSON.parse('{{URLs | tojson | safe}}')
 
         function nextPhoto(change){
