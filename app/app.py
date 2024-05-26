@@ -342,6 +342,14 @@ def addGallery():
         print("Invalid form")
         return render_template("addGallery.html", loggedIn = isLoggedIn(), form = form, currentDate = datetime.date.today(), username = username)
 
+@app.route("/myGalleries")
+def myGalleries():
+    myGalls = []
+    loggedIn = isLoggedIn()
+    if loggedIn:
+        myGalls = Gallery.query.filter_by(userId=session['userId']).all()
+    return render_template('myGalleries.html', loggedIn = loggedIn, photos = photos, galleries = myGalls, username = getCurrentUsername(), users = users)
+
 @app.route("/accountSettings", methods = ['GET', 'POST'])
 def settings():
     form = settingsForm()
