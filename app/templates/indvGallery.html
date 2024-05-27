@@ -17,7 +17,7 @@
                 Date Created: {{dateCreated.strftime('%d-%m-%Y')}}<br>
                 Date Last Edited: {{dateLastEdited.strftime('%d-%m-%Y')}}
             </div> 
-            <div class = "galleryUser">{{username}}</div>
+            <div class = "galleryUser">{{galleryUsername}}</div>
             <div class = "galleryDescription">
                 {{description}}
             </div>
@@ -28,10 +28,11 @@
         photoNum = 0
         console.log("{{URLs}}")
         photos = JSON.parse('{{URLs | tojson | safe}}')
+        numPhotos = parseInt("{{numPhotos}}")
 
         function nextPhoto(change){
             console.log("Changing photo")
-            photoNum = (photoNum + change) % parseInt("{{numPhotos}}")
+            photoNum = (photoNum + change + numPhotos) % numPhotos
             console.log(photoNum)
             key = photoNum.toString()
             console.log(key)

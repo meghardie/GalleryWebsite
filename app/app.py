@@ -248,13 +248,13 @@ def viewGallery(galleryID):
         URLs[count] = photo.photoURL
         count += 1
     print(URLs)
-    return render_template('indvGallery.html', URLs = URLs, title = gallery['title'], description = gallery['description'], numPhotos = gallery['numPhotos'], dateCreated = gallery['dateCreated'], dateLastEdited = gallery['dateLastEdited'], username = users[gallery['userId']]["username"], loggedIn = isLoggedIn())
+    return render_template('indvGallery.html', URLs = URLs, username = getCurrentUsername(), title = gallery['title'], description = gallery['description'], numPhotos = gallery['numPhotos'], dateCreated = gallery['dateCreated'], dateLastEdited = gallery['dateLastEdited'], galleryUsername = users[gallery['userId']]["username"], loggedIn = isLoggedIn())
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     form = loginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email = form.email.data).first()
+        user = User.query.filter_by(email = form.email.data.lower()).first()
         if user is None or not user.verify_password(form.password.data):
             return render_template('login.html', loginAttempted = True, form = form, loggedIn = False)
         else:
@@ -262,7 +262,7 @@ def login():
             session['loggedIn'] = True
             session.modified = True
             return redirect(url_for('homePage'))
-    return render_template('login.html', loginAttempted = False, form = form, loggedIn = isLoggedIn())
+    return render_template('login.html', loginAttempted = False, form = form, loggedIn = isLoggedIn(),  username = getCurrentUsername())
 
 @app.route("/logout")
 def logout():
@@ -364,7 +364,7 @@ def settings():
                 db.session.execute(update(User).where(User.id == userId).values(lname = form.lname.data))
                 db.session.commit()
             if len(form.email.data) != 0:
-                db.session.execute(update(User).where(User.id == userId).values(email = form.email.data))
+                db.session.execute(update(User).where(User.id == userId).values(email = form.email.data.lower()))
                 db.session.commit()
             if len(form.username.data) != 0:
                 db.session.execute(update(User).where(User.id == userId).values(username = form.username.data))
@@ -375,7 +375,7 @@ def settings():
             global users
             users = getUsers(True)
             return redirect(url_for('homePage'))
-    return render_template("settings.html", loggedIn = isLoggedIn(), form = form)
+    return render_template("settings.html", loggedIn = isLoggedIn(), form = form,  username = getCurrentUsername())
 
 with app.app_context():
     users = getUsers()
