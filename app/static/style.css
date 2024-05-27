@@ -175,6 +175,14 @@
     margin-bottom: 50px;
 }
 
+#addGalleryForm input[type = submit]{
+    height: 50px;
+    width: 150px;
+    font-weight: bold;
+    background-color: var(--darkBackground);
+    font-size: 1.25em;
+}
+
 /* for settings page */
 #settingsForm{
     margin: auto;
