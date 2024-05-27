@@ -7,6 +7,12 @@
     <div class = "pageTitle">
         Login
     </div>
+    <div id = "loginFailed">
+        {% if loginAttempted == True %}
+            Email or password incorrect. <br>
+            Please try again
+        {% endif %}
+    </div>
     <div id = "loginForm">
         {{wtf.quick_form(form)}}
     </div>

@@ -133,6 +133,14 @@
     color: black;
 }
 
+#loginFailed{
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 0;
+    color: red;
+    text-align: center;
+}
+
 /* for individual gallery page*/
 #indvGallery{
     width: 70%;
