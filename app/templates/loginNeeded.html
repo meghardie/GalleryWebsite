@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Please Login{% endblock %}
+
+{% block content %}
+    <div class = "loginReqMsg">
+        <p class = "mainMessage">You must be logged in to access this page!</p>
+        <div class = "loginLinks">
+            Log in <a href = "{{ url_for('login') }}">here</a><br>
+            Don't have an account? Register <a href = "{{ url_for('register') }}">here</a>
+        </div>
+    </div>
+{% endblock %}

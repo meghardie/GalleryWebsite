@@ -290,6 +290,10 @@ def register():
 
 @app.route("/addGallery", methods = ['GET', 'POST'])
 def addGallery():
+    loggedIn = isLoggedIn()
+    if not loggedIn:
+        return render_template('loginNeeded.html', loggedIn = loggedIn)
+    
     form = createGalleryForm()
     if isLoggedIn():
         username = getCurrentUsername()
@@ -340,18 +344,24 @@ def addGallery():
         return redirect(url_for("homePage"))
     else:
         print("Invalid form")
-        return render_template("addGallery.html", loggedIn = isLoggedIn(), form = form, currentDate = datetime.date.today(), username = username)
+        return render_template("addGallery.html", loggedIn = loggedIn, form = form, currentDate = datetime.date.today(), username = username)
 
 @app.route("/myGalleries")
 def myGalleries():
     myGalls = []
     loggedIn = isLoggedIn()
-    if loggedIn:
-        myGalls = Gallery.query.filter_by(userId=session['userId']).all()
+    if not loggedIn:
+        return render_template('loginNeeded.html', loggedIn = loggedIn)
+    
+    myGalls = Gallery.query.filter_by(userId=session['userId']).all()
     return render_template('myGalleries.html', loggedIn = loggedIn, photos = photos, galleries = myGalls, username = getCurrentUsername(), users = users)
 
 @app.route("/accountSettings", methods = ['GET', 'POST'])
 def settings():
+    loggedIn = isLoggedIn()
+    if not loggedIn:
+        return render_template('loginNeeded.html', loggedIn = loggedIn)
+    
     form = settingsForm()
     if form.validate_on_submit():
         userId = session.get('userId')
@@ -375,7 +385,7 @@ def settings():
             global users
             users = getUsers(True)
             return redirect(url_for('homePage'))
-    return render_template("settings.html", loggedIn = isLoggedIn(), form = form,  username = getCurrentUsername())
+    return render_template("settings.html", loggedIn = loggedIn, form = form,  username = getCurrentUsername())
 
 with app.app_context():
     users = getUsers()

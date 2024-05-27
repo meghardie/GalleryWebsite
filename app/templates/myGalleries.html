@@ -3,15 +3,6 @@
 {% block title %}My Galleries{% endblock %}
 
 {% block content %}
-    {% if loggedIn == False %}
-        <div class = "loginReqMsg">
-            <p class = "mainMessage">You must be logged in to access this page!</p>
-            <div class = "loginLinks">
-                Log in <a href = "{{ url_for('login') }}">here</a><br>
-                Don't have an account? Register <a href = "{{ url_for('register') }}">here</a>
-            </div>
-        </div>
-    {% else %}
     <div id = "galleries">
         {% for gallery in galleries %}
             {% set numPhotos = gallery['numPhotos'] %}
@@ -34,5 +25,4 @@
             </div>
         {% endfor %}
     </div>
-    {% endif %}
 {% endblock %}
