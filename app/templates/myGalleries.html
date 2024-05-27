@@ -12,6 +12,7 @@
             </div>
         </div>
     {% else %}
+    <div id = "galleries">
         {% for gallery in galleries %}
             {% set numPhotos = gallery['numPhotos'] %}
             {% set photosList = gallery['photos'] %}
@@ -32,5 +33,6 @@
                 </a>
             </div>
         {% endfor %}
+    </div>
     {% endif %}
 {% endblock %}
