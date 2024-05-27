@@ -22,6 +22,9 @@
                         <div class = "previewUser">{{users[gallery['userId']]['username']}}</div>
                     </div>
                 </a>
+                <div class = "editSection">
+                    <div class = "editButton" id = "{{gallery['id']}}"><a href = "{{ url_for('editGallery', galleryID = gallery['id'])}}" >Edit Gallery</a></div>
+                </div>
             </div>
         {% endfor %}
     </div>

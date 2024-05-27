@@ -250,6 +250,10 @@ def viewGallery(galleryID):
     print(URLs)
     return render_template('indvGallery.html', URLs = URLs, username = getCurrentUsername(), title = gallery['title'], description = gallery['description'], numPhotos = gallery['numPhotos'], dateCreated = gallery['dateCreated'], dateLastEdited = gallery['dateLastEdited'], galleryUsername = users[gallery['userId']]["username"], loggedIn = isLoggedIn())
 
+@app.route("/editGallery<int:galleryID>")
+def editGallery(galleryID):
+    return render_template('editGallery.html')
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     form = loginForm()

@@ -106,6 +106,32 @@
 
 .previewDetails{
     color: black;
+    margin-bottom: 50px;
+}
+
+/* for my galleries page */
+.editSection{
+    height: 40px;
+}
+
+.editButton{
+    margin: auto;
+    height: 30px;
+    width: 100px;
+    border: black solid 2px;
+    border-radius: 5px;
+    background-color: var(--lightBackground);
+    font-weight: bold;
+    text-align: center;
+    padding-top: 3px;
+}
+
+.editButton a{
+    color: black;
+}
+
+.editButton a:hover{
+    color: black;
 }
 
 /* for login and register pages */
@@ -174,6 +200,20 @@
     font-weight: normal;
 }
 
+/* for settings page */
+#settingsForm{
+    margin: auto;
+    width: 33%;
+    padding: 20px;
+}
+
+#settingsInstructions{
+    text-align: center;
+    margin: auto;
+    font-size: 1.25em;
+    padding-top: 10px;
+}
+
 /* for add gallery page*/
 #galleryPreview{
     width: 70%;
@@ -191,21 +231,6 @@
     font-size: 1.25em;
 }
 
-/* for settings page */
-#settingsForm{
-    margin: auto;
-    width: 33%;
-    padding: 20px;
-}
-
-#settingsInstructions{
-    text-align: center;
-    margin: auto;
-    font-size: 1.25em;
-    padding-top: 10px;
-}
-
-/* for add to gallery page*/
 #addGalleryForm{
     width: 40%;
     margin: auto;
