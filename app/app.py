@@ -6,7 +6,7 @@ from flask_wtf.file import FileAllowed
 from wtforms import StringField, SubmitField, HiddenField, PasswordField, TextAreaField, MultipleFileField
 from wtforms.validators import ValidationError, DataRequired, Length
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import update
+from sqlalchemy import update, delete
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.datastructures import FileStorage
@@ -98,6 +98,7 @@ class Photo(db.Model):
         photo = Photo(galleryId = galleryId, photoURL = photoURL, thumbnailURL = thumbnailURL)
         db.session.add(photo)
         db.session.commit()
+        print("Added photo")
         return photo
 
 @lm.user_loader
@@ -202,6 +203,28 @@ def getPhotos(refresh = False):
             }
     return photos
 
+def savePhoto(data, galleryFolder, filename, photoNum):
+    filePath = galleryFolder + "/" + filename
+    print("Saving photo... file path = " + filePath)
+    if ',' in data:
+        data= data.split(',')[1]
+
+    data = base64.b64decode(data)
+    
+    image = Image.open(BytesIO(data))
+    image.save(filePath)
+
+    thumbnail = Image.open(filePath)
+    thumbnailHeight = 125
+    ratio = thumbnail.width / thumbnail.height
+    newWidth = int(thumbnailHeight * ratio)
+    thumbnail.thumbnail((newWidth, thumbnailHeight))
+    fileExtension = os.path.splitext(filename)[1]
+    thumbnailPath = (galleryFolder + "/" + "thumbnail" + str(photoNum) + fileExtension)
+    thumbnail.save(thumbnailPath)
+
+    return filePath, thumbnailPath
+
 class loginForm(FlaskForm):
     email = StringField("Email: ", validators = [containsData, emailCheck])
     password = PasswordField("Password: ", validators = [containsData])
@@ -249,20 +272,70 @@ def viewGallery(galleryID):
         count += 1
     return render_template('indvGallery.html', URLs = URLs, username = getCurrentUsername(), title = gallery['title'], description = gallery['description'], numPhotos = gallery['numPhotos'], dateCreated = gallery['dateCreated'], dateLastEdited = gallery['dateLastEdited'], galleryUsername = users[gallery['userId']]["username"], loggedIn = isLoggedIn())
 
-@app.route("/editGallery<int:galleryID>")
+@app.route("/editGallery<int:galleryID>", methods = ['GET', 'POST'])
 def editGallery(galleryID):
     gallery = Gallery.query.filter_by(id = galleryID).first()
-    form = createGalleryForm()
-    form.title.data = gallery.title
-    form.description.data = gallery.description
-    photos = Photo.query.filter_by(galleryId=gallery.id).all()
-    URLs = {}
+    oldPhotos = Photo.query.filter_by(galleryId=gallery.id).all()
+    oldURLs = {}
     count = 0
     #adds all photo urls to a list
-    for photo in photos:
-        URLs[count] = photo.photoURL
+    for photo in oldPhotos:
+        oldURLs[count] = photo.photoURL
         count += 1
-    return render_template('editGallery.html', form = form, currentDate = datetime.date.today(), dateCreated = gallery.dateCreated, URLs = URLs, firstPhoto = URLs[0])
+    form = createGalleryForm()
+
+    if form.validate_on_submit():
+        galleryFolder = (app.config['UPLOAD_FOLDER'] + "/" + str(galleryID))
+        print("Gallery folder = " + galleryFolder)
+        newTitle = form.title.data
+        newDesc = form.description.data
+        photos = json.loads(form.photos.data)
+        print("Old title: " + gallery.title +"\nNewTitle:" + newTitle)
+        print("\nOld desc: " + gallery.description +"\nNew Desc:" + newDesc)
+        if newTitle != gallery.title:
+            db.session.execute(update(Gallery).where(Gallery.id == galleryID).values(title = newTitle))
+            db.session.commit()
+            print("Title updated")
+        if newDesc != gallery.description:
+            db.session.execute(update(Gallery).where(Gallery.id == galleryID).values(description = newDesc))
+            db.session.commit()
+            print("Description updated")
+        
+        #save any kept data
+        for i in range (len(photos)):
+            photo = photos[i]
+            if photo['original'] == True:
+                filePath = photo['filename']
+                print("File path = " + filePath)
+                img = Image.open(filePath)
+                data = BytesIO()
+                img.save(data, format=img.format)
+                data.seek(0)
+                photoData = base64.b64encode(data.getvalue()).decode('utf-8')
+                photo['data'] = photoData
+        
+        #delete existing photos from database
+        db.session.execute(delete(Photo).where(Photo.galleryId == galleryID))
+        db.session.commit()
+
+        #save new photos to server and database
+        for i in range (len(photos)):
+            photo = photos[i]
+            filePath, thumbnailPath = savePhoto(photo['data'], galleryFolder, os.path.basename(photo['filename']), i)
+            Photo.addPhoto(galleryID, filePath, thumbnailPath)
+
+        #update numPhotos in database
+        db.session.execute(update(Gallery).where(Gallery.id==galleryID).values(numPhotos = len(photos)))
+        db.session.commit()
+
+        photos = getPhotos(True)
+        global galleries
+        galleries = getGalleries(True)
+        return redirect(url_for("homePage"))
+    
+    form.title.data = gallery.title
+    form.description.data = gallery.description
+    return render_template('editGallery.html', form = form, currentDate = datetime.date.today(), dateCreated = gallery.dateCreated, URLs = oldURLs, firstPhoto = oldURLs[0])
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -324,7 +397,6 @@ def addGallery():
             item = photos[i]
             filename = secure_filename(item['filename'])
             data = item['data']
-            print(filename)
             if filename == '' or galleryId == '':
                 return 'No selected file or gallery ID'
             
@@ -332,24 +404,8 @@ def addGallery():
                 galleryFolder = (app.config['UPLOAD_FOLDER'] + "/" + str(galleryId))
                 if not os.path.exists(galleryFolder):
                     os.makedirs(galleryFolder)
-                filePath = galleryFolder + "/" + filename
-    
-                if ',' in data:
-                    data= data.split(',')[1]
                 
-                data = base64.b64decode(data)
-                image = Image.open(BytesIO(data))
-                image.save(filePath)
-
-                thumbnail = Image.open(filePath)
-                thumbnailHeight = 125
-                ratio = thumbnail.width / thumbnail.height
-                newWidth = int(thumbnailHeight * ratio)
-                thumbnail.thumbnail((newWidth, thumbnailHeight))
-                fileExtension = os.path.splitext(filename)[1]
-                thumbnailPath = (galleryFolder + "/" + "thumbnail" + str(i) + fileExtension)
-                thumbnail.save(thumbnailPath)
-
+                filePath, thumbnailPath = savePhoto(data, galleryFolder, filename, i)
                 newPhoto = Photo.addPhoto(galleryId, filePath, thumbnailPath)
                 
         photos = getPhotos(True)

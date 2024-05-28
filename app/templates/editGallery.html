@@ -97,9 +97,10 @@
         photoPreview.appendChild(div)
         imgIDs ++;
     }
+    
     for(item in photos){
         photoURL = photos[item]
-        imgObject = {'filename': photoURL, 'data': photoURL, 'id': imgIDs}
+        imgObject = {'filename': photoURL, 'data': photoURL, 'id': imgIDs, 'original': true}
         currentFiles.push(imgObject)
         addPhotoPreview(imgObject)
     }
@@ -130,7 +131,7 @@
                 reader.onload = function(e) {
                     if (currentFiles.length < 10){
                         document.getElementById("addPhotosError").innerHTML = ""
-                        imgObject = {'filename': filenames[fileNum], 'data': e.target.result, 'id': imgIDs}
+                        imgObject = {'filename': filenames[fileNum], 'data': e.target.result, 'id': imgIDs, original: false}
                         currentFiles.push(imgObject)
                         addPhotoPreview(imgObject)
                         fileNum ++;
