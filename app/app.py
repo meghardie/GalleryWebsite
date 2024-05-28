@@ -230,7 +230,7 @@ class createGalleryForm(FlaskForm):
     description = TextAreaField('Gallery Description: ', validators=[containsData])
     addPhoto = MultipleFileField()
     photos = HiddenField()
-    submit = SubmitField("Create Gallery")
+    submit = SubmitField("")
 
 @app.route("/")
 def homePage():
@@ -247,12 +247,22 @@ def viewGallery(galleryID):
     for photo in photos:
         URLs[count] = photo.photoURL
         count += 1
-    print(URLs)
     return render_template('indvGallery.html', URLs = URLs, username = getCurrentUsername(), title = gallery['title'], description = gallery['description'], numPhotos = gallery['numPhotos'], dateCreated = gallery['dateCreated'], dateLastEdited = gallery['dateLastEdited'], galleryUsername = users[gallery['userId']]["username"], loggedIn = isLoggedIn())
 
 @app.route("/editGallery<int:galleryID>")
 def editGallery(galleryID):
-    return render_template('editGallery.html')
+    gallery = Gallery.query.filter_by(id = galleryID).first()
+    form = createGalleryForm()
+    form.title.data = gallery.title
+    form.description.data = gallery.description
+    photos = Photo.query.filter_by(galleryId=gallery.id).all()
+    URLs = {}
+    count = 0
+    #adds all photo urls to a list
+    for photo in photos:
+        URLs[count] = photo.photoURL
+        count += 1
+    return render_template('editGallery.html', form = form, currentDate = datetime.date.today(), dateCreated = gallery.dateCreated, URLs = URLs, firstPhoto = URLs[0])
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():

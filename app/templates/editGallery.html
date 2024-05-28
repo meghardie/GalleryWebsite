@@ -3,4 +3,174 @@
 {% block title %}Edit Gallery{% endblock %}
 
 {% block content %}
+<div class = "pageTitle">
+    Edit Gallery
+</div>
+<form id = "addGalleryForm" method = "post" enctype="multipart/form-data">
+    {{ form.csrf_token }}{{form.photos}}
+    {{form.title.label}} {{form.title}}
+    {% if form.title.errors %}
+            <div class="addToGalleryErrors" id = "titleErrors">{% for error in form.title.errors %}{{ error }}{% endfor %}</div>
+    {% endif %}
+    <br>
+    {{form.description.label}} {{form.description}}
+    {% if form.description.errors %}
+            <div class="addToGalleryErrors" id = "descErrors">{% for error in form.description.errors %}{{ error }}{% endfor %}</div>
+    {% endif %}
+    <br>
+    <b>Ad up to 10 photos to your galllery</b> {{form.addPhoto}}
+    {% if form.addPhoto.errors %}
+            <div class="addToGalleryErrors">{% for error in form.addPhoto.errors %}{{ error }}{% endfor %}</div>
+    {% endif %}
+    <div id = "addPhotosError"></div>
+    <div id = "photosToAddPreview"></div>
+    <br>
+    {{form.submit(value = "Save Changes")}}
+</form>
+
+<div id = "galleryPreview">
+    {% set dateLastEdited = currentDate %}
+    <div class = "pageTitle" >Gallery Preview<br></div>
+    <div class = "pageTitle" id = "previewGallTitle">{{form.title.data}}</div>
+    <div class = "images">
+        <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
+        <img id = "previewPhoto" src = "{{firstPhoto}}">
+        <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" class = "rightArrow" onclick = "nextPhoto(1)">
+    </div>
+    <div class = "galleryDetails">
+        <div class = "galleryDates">
+            Date Created: {{dateCreated.strftime('%d-%m-%Y')}}<br>
+            Date Last Edited: {{dateLastEdited.strftime('%d-%m-%Y')}}
+        </div> 
+        <div class = "galleryUser">{{username}}</div>
+        <div class = "galleryDescription" id = "previewDesc">
+            {{form.description.data}}
+        </div>
+    </div>
+</div>
+
+<script>
+    currentFiles = []
+    imgIDs = 0
+    photoPreview = document.getElementById("photosToAddPreview")
+    photos = JSON.parse('{{URLs | tojson | safe}}')
+    
+    function deleteImage(id){
+        id = id.substring(5)
+        div = document.getElementById(id)
+        if (div){
+            div.remove()
+        }
+
+        for(let i=0; i<currentFiles.length; i++){
+            item = currentFiles[i]
+            if( item.id == id){
+                currentFiles.splice(i,1)
+            }
+        }
+    }
+
+    function nextPhoto(change){
+        numPhotos = currentFiles.length
+        if (numPhotos > 1){
+            currentPhoto = (currentPhoto + change + numPhotos) % numPhotos
+            img = document.getElementById("previewPhoto")
+            currentImg = currentFiles[currentPhoto]
+            img.src = currentImg.data
+        }
+    }
+    
+    function addPhotoPreview(imgObject){
+        div = document.createElement("div")
+        div.className = "photoPreviewGridItem"
+        div.id = imgIDs.toString()
+        img = document.createElement("img")
+        img.className = "addToGalleryPhoto"
+        img.src = imgObject.data
+        cross = document.createElement("img")
+        cross.src = "{{ url_for('static', filename = 'delete.png') }}"
+        cross.className = "deletePhotoButton"
+        cross.id = "cross" + imgIDs
+        cross.addEventListener("click", function(){ deleteImage(this.id)})
+        div.appendChild(img)
+        div.appendChild(cross)
+        photoPreview.appendChild(div)
+        imgIDs ++;
+    }
+    for(item in photos){
+        photoURL = photos[item]
+        imgObject = {'filename': photoURL, 'data': photoURL, 'id': imgIDs}
+        currentFiles.push(imgObject)
+        addPhotoPreview(imgObject)
+    }
+
+    imgIDs = currentFiles.length
+    currentPhoto = 0
+
+    document.getElementById('addPhoto').addEventListener('change', function(event) {
+        filenames = []
+        files = document.getElementById("addPhoto").files
+        for (let i = 0; i < files.length; i++){
+            file = files[i]
+            filenames.push(file.name)
+        }
+        test =  document.getElementById("test")
+        photoPreview = document.getElementById("photosToAddPreview")
+        fileNum = 0
+        let firstPhotos = false
+        if (currentFiles.length == 0){
+            firstPhotos = true
+        }
+        for (let i = 0; i < files.length; i++){
+            file = files[i]
+
+            if (file.type.startsWith('image/')) {
+                reader = new FileReader()
+                
+                reader.onload = function(e) {
+                    if (currentFiles.length < 10){
+                        document.getElementById("addPhotosError").innerHTML = ""
+                        imgObject = {'filename': filenames[fileNum], 'data': e.target.result, 'id': imgIDs}
+                        currentFiles.push(imgObject)
+                        addPhotoPreview(imgObject)
+                        fileNum ++;
+                    }
+                    else{
+                        document.getElementById("addPhotosError").innerHTML = "10 photos max!"
+                    }
+                }
+                reader.readAsDataURL(file)
+            }    
+        }
+    })
+
+    document.getElementById("title").addEventListener('change', function(event){
+        let currentTitle = document.getElementById("title").value
+        document.getElementById("previewGallTitle").innerHTML = currentTitle
+    })
+
+    document.getElementById("description").addEventListener('change', function(event){
+        let currentDesc = document.getElementById("description").value
+        document.getElementById("previewDesc").innerHTML = currentDesc
+    })
+
+    document.getElementById('addGalleryForm').addEventListener('submit', function(event) {
+        if(document.getElementById('title').value.length == 0){
+            document.getElementById("titleErrors").innerHTML = "Please fill in this field"
+            event.preventDefault()
+        }
+        else if(document.getElementById('description').value.length == 0){
+            document.getElementById("descErrors").innerHTML = "Please fill in this field"
+            event.preventDefault()
+        }
+        else if (currentFiles.length == 0){
+            document.getElementById("addPhotosError").innerHTML = "Add at least 1 photo to create a gallery!"
+            event.preventDefault()
+        }
+        else{
+            document.getElementById("photos").value = JSON.stringify(currentFiles)
+        }
+    })
+  
+</script>
 {% endblock %}
