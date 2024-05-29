@@ -32,15 +32,15 @@
     {% set dateLastEdited = currentDate %}
     <div class = "pageTitle" >Gallery Preview<br></div>
     <div class = "pageTitle" id = "previewGallTitle">{{form.title.data}}</div>
-    <div class = "images">
+    <div class = "galleryImages">
         <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
         <img id = "editPreviewPhoto" src = "{{firstPhoto}}" class = "galleryPhoto">
         <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" class = "rightArrow" onclick = "nextPhoto(1)">
     </div>
     <div class = "galleryDetails">
         <div class = "galleryDates">
-            Date Created: {{dateCreated.strftime('%d-%m-%Y')}}<br>
-            Date Last Edited: {{dateLastEdited.strftime('%d-%m-%Y')}}
+            Date Created: {{dateCreated.strftime('%d/%m/%Y')}}<br>
+            Date Last Edited: {{dateLastEdited.strftime('%d/%m/%Y')}}
         </div> 
         <div class = "galleryUser">{{username}}</div>
         <div class = "galleryDescription" id = "previewDesc">

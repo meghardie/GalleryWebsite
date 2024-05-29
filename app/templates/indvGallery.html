@@ -7,7 +7,7 @@
         {{title}}
     </div>
     <div id = "indvGallery">
-        <div class = "images">
+        <div class = "galleryImages">
             <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
             <img src = "{{URLs[0]}}" id = "photo" class = "galleryPhoto">
             <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" class = "rightArrow" onclick = "nextPhoto(1)">

@@ -34,7 +34,7 @@
         {% set dateLastEdited = currentDate %}
         <div class = "pageTitle" >Gallery Preview<br></div>
         <div class = "pageTitle" id = "previewGallTitle"></div>
-        <div class = "images">
+        <div class = "galleryImages">
             <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
             <img id = "previewPhoto" class = "galleryPhoto">
             <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" class = "rightArrow" onclick = "nextPhoto(1)">

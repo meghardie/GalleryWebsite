@@ -176,8 +176,17 @@
     margin-bottom: 50px;
 }
 
-.images{
+.galleryImages{
     text-align: center;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.galleryPhoto{
+    max-height: 300px; 
+    max-width: 50%;
 }
 
 .galleryDetails{
@@ -198,11 +207,6 @@
     margin-top: 40px;
     background-color: var(--darkBackground);
     font-weight: normal;
-}
-
-.galleryPhoto{
-    max-height: 500px; 
-    max-width: 50%;
 }
 
 /* for settings page */
