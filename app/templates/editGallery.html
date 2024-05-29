@@ -34,7 +34,7 @@
     <div class = "pageTitle" id = "previewGallTitle">{{form.title.data}}</div>
     <div class = "images">
         <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
-        <img id = "previewPhoto" src = "{{firstPhoto}}">
+        <img id = "editPreviewPhoto" src = "{{firstPhoto}}" class = "galleryPhoto">
         <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" class = "rightArrow" onclick = "nextPhoto(1)">
     </div>
     <div class = "galleryDetails">
@@ -74,7 +74,7 @@
         numPhotos = currentFiles.length
         if (numPhotos > 1){
             currentPhoto = (currentPhoto + change + numPhotos) % numPhotos
-            img = document.getElementById("previewPhoto")
+            img = document.getElementById("editPreviewPhoto")
             currentImg = currentFiles[currentPhoto]
             img.src = currentImg.data
         }

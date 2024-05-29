@@ -9,7 +9,7 @@
     <div id = "indvGallery">
         <div class = "images">
             <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
-            <img src = "{{URLs[0]}}" style = "height: 500px" id = "photo">
+            <img src = "{{URLs[0]}}" id = "photo" class = "galleryPhoto">
             <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" class = "rightArrow" onclick = "nextPhoto(1)">
         </div>
         <div class = "galleryDetails">

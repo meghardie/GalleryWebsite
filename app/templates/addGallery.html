@@ -36,7 +36,7 @@
         <div class = "pageTitle" id = "previewGallTitle"></div>
         <div class = "images">
             <img src = "{{ url_for('static', filename = 'leftArrow.png') }}" class = "leftArrow" onclick = "nextPhoto(-1)">
-            <img id = "previewPhoto">
+            <img id = "previewPhoto" class = "galleryPhoto">
             <img src = "{{ url_for('static', filename = 'rightArrow.png') }}" class = "rightArrow" onclick = "nextPhoto(1)">
         </div>
         <div class = "galleryDetails">

@@ -215,10 +215,23 @@ def savePhoto(data, galleryFolder, filename, photoNum):
     image.save(filePath)
 
     thumbnail = Image.open(filePath)
-    thumbnailHeight = 125
-    ratio = thumbnail.width / thumbnail.height
-    newWidth = int(thumbnailHeight * ratio)
-    thumbnail.thumbnail((newWidth, thumbnailHeight))
+    maxThumbHeight = 125
+    maxThumbWidth = 125
+    width = thumbnail.width
+    height = thumbnail.height
+    ratio = width / height
+
+    #if photo is wider than tall then max width = 125px
+    if ratio > 1:
+        width = maxThumbWidth
+        height = int(width / ratio)
+    #if photo is taller than wide max height = 125px
+    else:
+        height = maxThumbHeight
+        width = int(height * ratio)
+
+    # newWidth = int(thumbnailHeight * ratio)
+    thumbnail.thumbnail((width, height))
     fileExtension = os.path.splitext(filename)[1]
     thumbnailPath = (galleryFolder + "/" + "thumbnail" + str(photoNum) + fileExtension)
     thumbnail.save(thumbnailPath)
