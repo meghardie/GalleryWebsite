@@ -308,6 +308,13 @@ def viewGallery(galleryID):
 
 @app.route("/editGallery<int:galleryID>", methods = ['GET', 'POST'])
 def editGallery(galleryID):
+    #checks that user logged in owns gallery
+    ownerID = Gallery.query.filter_by(id = galleryID).first().userId
+    currentUserID = session.get('userId')
+    #if they don't own they are redirected to another webpage
+    if (ownerID != currentUserID):
+        return redirect(url_for("accessDenied"))
+    
     #gets info about relevant gallery and its photos
     gallery = Gallery.query.filter_by(id = galleryID).first()
     oldPhotos = Photo.query.filter_by(galleryId=gallery.id).all()
@@ -511,6 +518,10 @@ def settings():
             users = getUsers(True)
             return redirect(url_for('homePage'))
     return render_template("settings.html", loggedIn = loggedIn, form = form,  username = getCurrentUsername())
+
+@app.route("/accessDenied")
+def accessDenied():
+    return render_template("accessDenied.html")
 
 #sets up the initial database dictionaries
 with app.app_context():

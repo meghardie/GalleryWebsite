@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Create a Gallery{% endblock %}
+
+{% block content %}
+<div class = "loginReqMsg">
+    <p class = "mainMessage">You don't have access to this page</p>
+    <p>This may be because your account doesn't have access rights or because you aren't logged in.</p>
+    <p>Return to the home page <a href = "{{url_for('homePage')}}">here</a></p>
+</div>
+{% endblock %}
