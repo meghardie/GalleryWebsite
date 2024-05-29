@@ -52,7 +52,9 @@
     </div>
 
     <script>
+        //deletes an image from all parts of the gallery
         function deleteImage(id){
+            //deletes image preview in form
             id = id.substring(5)
             div = document.getElementById(id)
             if (div){
@@ -63,50 +65,61 @@
             for(let i=0; i<currentFiles.length; i++){
                 item = currentFiles[i]
                 if( item.id == id){
+                    //deletes from current files
                     currentFiles.splice(i,1)
+                    //moves onto next photo in gallery preview if necessary
                     nextPhoto(0)
                 }
-            }
+            }        
         }
 
+        //changes photo in gallery preview
         function nextPhoto(change){
             numPhotos = currentFiles.length
             if (numPhotos > 1){
+                //finds location of next photo
                 currentPhoto = (currentPhoto + change + numPhotos) % numPhotos
                 img = document.getElementById("previewPhoto")
+                //changes photo
                 img.src = currentFiles[currentPhoto].data
-                console.log("changed src")
             }
         }
 
+        //sets intial values
         currentFiles = []
         imgIDs = 0
         currentPhoto = 0
 
+        //run everytime a new file(s) is uploaded
         document.getElementById('addPhoto').addEventListener('change', function(event) {
+            //creates list of all files that have been uploaded
             filenames = []
             files = document.getElementById("addPhoto").files
             for (let i = 0; i < files.length; i++){
                 file = files[i]
                 filenames.push(file.name)
             }
-            test =  document.getElementById("test")
             photoPreview = document.getElementById("photosToAddPreview")
             fileNum = 0
             let firstPhotos = false
             if (currentFiles.length == 0){
                 firstPhotos = true
             }
+            //iterates through eahc file to be uploaded
             for (let i = 0; i < files.length; i++){
                 file = files[i]
 
+                //checks that file is an imag
                 if (file.type.startsWith('image/')) {
                     reader = new FileReader()
                     
+                    //reads data from image
                     reader.onload = function(e) {
                         if (currentFiles.length < 10){
                             document.getElementById("addPhotosError").innerHTML = ""
+                            //adds to currentFiles
                             currentFiles.push({'filename': filenames[fileNum], 'data': e.target.result, 'id': imgIDs})
+                            //adds thumbnail in form
                             div = document.createElement("div")
                             div.className = "photoPreviewGridItem"
                             div.id = imgIDs.toString()
@@ -127,7 +140,6 @@
                             if ((firstPhotos == true) && (currentFiles.length != 0)){
                                 img = document.getElementById("previewPhoto")
                                 img.src = currentFiles[0].data
-                                console.log("changed src")
                                 firstPhotos = false
                             }
                         }
@@ -136,21 +148,32 @@
                         }
                     }
                     reader.readAsDataURL(file)
+                }
+                else{
+                    //adds error if necessary
+                    document.getElementById("addPhotosError").innerHTML = "Images only!"
                 }    
             }
         })
 
+        //runs whenever title is changed
+        //updates title in gallery preview
         document.getElementById("title").addEventListener('change', function(event){
             let currentTitle = document.getElementById("title").value
             document.getElementById("previewGallTitle").innerHTML = currentTitle
         })
 
+        //runs whenever description is changed
+        //updates description in gallery preview
         document.getElementById("description").addEventListener('change', function(event){
             let currentDesc = document.getElementById("description").value
             document.getElementById("previewDesc").innerHTML = currentDesc
         })
 
+        //runs whenever form is submitted
         document.getElementById('addGalleryForm').addEventListener('submit', function(event) {
+            //checks there are no errors in for
+            //if error then form isnt submitted
             if(document.getElementById('title').value.length == 0){
                 document.getElementById("titleErrors").innerHTML = "Please fill in this field"
                 event.preventDefault()
@@ -164,6 +187,7 @@
                 event.preventDefault()
             }
             else{
+                //adds currentFiles to hidden form to send back to server
                 document.getElementById("photos").value = JSON.stringify(currentFiles)
             }
         })

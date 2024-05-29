@@ -50,12 +50,15 @@
 </div>
 
 <script>
+    //sets intial values
     currentFiles = []
     imgIDs = 0
     photoPreview = document.getElementById("photosToAddPreview")
     photos = JSON.parse('{{URLs | tojson | safe}}')
     
+    //deletes an image from all parts of the gallery
     function deleteImage(id){
+        //deletes image preview in form
         id = id.substring(5)
         div = document.getElementById(id)
         if (div){
@@ -66,43 +69,52 @@
         for(let i=0; i<currentFiles.length; i++){
             item = currentFiles[i]
             if( item.id == id){
+                //deletes from current files
                 currentFiles.splice(i,1)
+                //moves onto next photo in gallery preview if necessary
                 nextPhoto(0)
             }
-        }
-
-        img = document.getElementById("editPreviewPhoto")
-        
+        }        
     }
 
+    //changes photo in gallery preview
     function nextPhoto(change){
         numPhotos = currentFiles.length
         if (numPhotos > 1){
+            //finds location of next photo
             currentPhoto = (currentPhoto + change + numPhotos) % numPhotos
             img = document.getElementById("editPreviewPhoto")
             currentImg = currentFiles[currentPhoto]
+            //changes photo
             img.src = currentImg.data
         }
     }
     
+    //adds new photo to thumbnail in form
     function addPhotoPreview(imgObject){
+        //creates div to add thumbnail to
         div = document.createElement("div")
         div.className = "photoPreviewGridItem"
         div.id = imgIDs.toString()
+        //creates thumbnail
         img = document.createElement("img")
         img.className = "addToGalleryPhoto"
         img.src = imgObject.data
+        //creates delete button
         cross = document.createElement("img")
         cross.src = "{{ url_for('static', filename = 'delete.png') }}"
         cross.className = "deletePhotoButton"
         cross.id = "cross" + imgIDs
         cross.addEventListener("click", function(){ deleteImage(this.id)})
+        //adds content to div
         div.appendChild(img)
         div.appendChild(cross)
+        //add to webpage
         photoPreview.appendChild(div)
         imgIDs ++;
     }
     
+    //adds each existing photo to current files and photo preview in form
     for(item in photos){
         photoURL = photos[item]
         imgObject = {'filename': photoURL, 'data': photoURL, 'id': imgIDs, 'original': true}
@@ -110,57 +122,75 @@
         addPhotoPreview(imgObject)
     }
 
+    //sets values based on existing photos
     imgIDs = currentFiles.length
     currentPhoto = 0
 
+    //run everytime a new file(s) is uploaded
     document.getElementById('addPhoto').addEventListener('change', function(event) {
+        //creates list of all files that have been uploaded
         filenames = []
         files = document.getElementById("addPhoto").files
         for (let i = 0; i < files.length; i++){
             file = files[i]
             filenames.push(file.name)
         }
-        test =  document.getElementById("test")
         photoPreview = document.getElementById("photosToAddPreview")
         fileNum = 0
         let firstPhotos = false
         if (currentFiles.length == 0){
             firstPhotos = true
         }
+        //iterates through eahc file to be uploaded
         for (let i = 0; i < files.length; i++){
             file = files[i]
 
+            //checks that file is an image
             if (file.type.startsWith('image/')) {
                 reader = new FileReader()
-                
+                //reads data from image
                 reader.onload = function(e) {
                     if (currentFiles.length < 10){
                         document.getElementById("addPhotosError").innerHTML = ""
+                        //adds to currentFiles
                         imgObject = {'filename': filenames[fileNum], 'data': e.target.result, 'id': imgIDs, original: false}
                         currentFiles.push(imgObject)
+                        //adds thumbnail in form
                         addPhotoPreview(imgObject)
                         fileNum ++;
                     }
                     else{
+                        //adds error if necessary
                         document.getElementById("addPhotosError").innerHTML = "10 photos max!"
                     }
                 }
                 reader.readAsDataURL(file)
-            }    
+            } 
+            else{
+                //adds error if necessary
+                document.getElementById("addPhotosError").innerHTML = "Images only!"
+            }   
         }
     })
 
+    //runs whenever title is changed
+    //updates title in gallery preview
     document.getElementById("title").addEventListener('change', function(event){
         let currentTitle = document.getElementById("title").value
         document.getElementById("previewGallTitle").innerHTML = currentTitle
     })
 
+    //runs whenever description is changed
+    //updates description in gallery preview
     document.getElementById("description").addEventListener('change', function(event){
         let currentDesc = document.getElementById("description").value
         document.getElementById("previewDesc").innerHTML = currentDesc
     })
 
+    //runs when form is submitted
     document.getElementById('addGalleryForm').addEventListener('submit', function(event) {
+        //checks for errors in form
+        //if error form isn't submitted
         if(document.getElementById('title').value.length == 0){
             document.getElementById("titleErrors").innerHTML = "Please fill in this field"
             event.preventDefault()
@@ -173,6 +203,7 @@
             document.getElementById("addPhotosError").innerHTML = "Add at least 1 photo to create a gallery!"
             event.preventDefault()
         }
+        //adds currentFiles to hidden form to send back to server
         else{
             document.getElementById("photos").value = JSON.stringify(currentFiles)
         }

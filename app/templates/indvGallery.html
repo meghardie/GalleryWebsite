@@ -25,22 +25,16 @@
     </div>
 
     <script>
+        //sets intial values
         photoNum = 0
-        console.log("{{URLs}}")
         photos = JSON.parse('{{URLs | tojson | safe}}')
         numPhotos = parseInt("{{numPhotos}}")
 
+        //changes to next photo
         function nextPhoto(change){
-            console.log("Changing photo")
             photoNum = (photoNum + change + numPhotos) % numPhotos
-            console.log(photoNum)
             key = photoNum.toString()
-            console.log(key)
-            console.log(photos[key])
             document.getElementById("photo").src = photos[key]
         }
-
-        console.log(photoNum)
-        console.log(photos)
     </script>
 {% endblock %}
