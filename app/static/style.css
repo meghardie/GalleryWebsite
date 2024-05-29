@@ -92,7 +92,7 @@
     background-color: var(--lightBackground);
 }
 
-.previewTitle{
+.previewTitleDate{
     float:left;
     font-weight: bold;
     padding: 5px;

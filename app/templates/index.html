@@ -22,8 +22,14 @@
                     {% endfor %}
                 </div>
                 <div class = "previewDetails">
-                    <div class = "previewTitle">{{gallery['title']}}</div>
-                    <div class = "previewUser">{{users[gallery['userId']]['username']}}</div>
+                    <div class = "previewTitleDate">
+                        {{gallery['title']}}
+                        <br>
+                        {{gallery['dateCreated'].strftime('%d/%m/%Y')}}
+                    </div>
+                    <div class = "previewUser">
+                        {{users[gallery['userId']]['username']}}
+                    </div>
                 </div>
             </a>
         </div>
