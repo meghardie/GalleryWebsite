@@ -62,12 +62,17 @@
             div.remove()
         }
 
+        img = document.getElementById("editPreviewPhoto")
         for(let i=0; i<currentFiles.length; i++){
             item = currentFiles[i]
             if( item.id == id){
                 currentFiles.splice(i,1)
+                nextPhoto(0)
             }
         }
+
+        img = document.getElementById("editPreviewPhoto")
+        
     }
 
     function nextPhoto(change){

@@ -58,6 +58,15 @@
             if (div){
                 div.remove()
             }
+
+            img = document.getElementById("editPreviewPhoto")
+            for(let i=0; i<currentFiles.length; i++){
+                item = currentFiles[i]
+                if( item.id == id){
+                    currentFiles.splice(i,1)
+                    nextPhoto(0)
+                }
+            }
         }
 
         function nextPhoto(change){
@@ -97,7 +106,7 @@
                     reader.onload = function(e) {
                         if (currentFiles.length < 10){
                             document.getElementById("addPhotosError").innerHTML = ""
-                            currentFiles.push({'filename': filenames[fileNum], 'data': e.target.result})
+                            currentFiles.push({'filename': filenames[fileNum], 'data': e.target.result, 'id': imgIDs})
                             div = document.createElement("div")
                             div.className = "photoPreviewGridItem"
                             div.id = imgIDs.toString()
