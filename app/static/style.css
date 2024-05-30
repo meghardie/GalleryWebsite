@@ -169,7 +169,7 @@
 
 /* for individual gallery page*/
 #indvGallery{
-    width: 70%;
+    width: 50%;
     margin: auto;
     background-color: var(--lightBackground);
     margin-top: 20px;
@@ -181,7 +181,9 @@
     height: 320px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .galleryPhoto{
