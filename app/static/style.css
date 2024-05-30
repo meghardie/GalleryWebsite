@@ -370,7 +370,6 @@
 
 #previewPhoto{
     max-width: 80%;
-    max-height: 500px;
 }
 
 #addPhoto input[type=file]{
