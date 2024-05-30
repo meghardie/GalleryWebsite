@@ -117,6 +117,7 @@
     float: left;
     padding: 10px;
     padding-left: 20px;
+    height: 100vh;
 }
 
 #sidebarTitle{
@@ -126,6 +127,10 @@
 
 .sortGallsLabel{
     font-weight: normal;
+}
+
+#sidebarForm label{
+    padding-bottom: 10px;
 }
 
 #sidebar input[type="radio"] {

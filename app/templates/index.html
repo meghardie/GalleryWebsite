@@ -10,7 +10,7 @@
         <div id = "sidebarTitle">
             Sort Galleries
         </div>
-        <form action="{{ url_for('homePage') }}" method = "GET">
+        <form action="{{ url_for('homePage') }}" method = "GET" id = "sidebarForm">
             <input type = "radio" id = "DateNtoO" name = "sortGalls" value = "DateNtoO" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls', 'DateNtoO') == 'DateNtoO' else '' }}>
             <label for = "DateNtoO" class = "sortGallsLabel">Date Created (Newest first)</label>
             <br><input type = "radio" id = "DateOtoN" name = "sortGalls" value = "DateOtoN" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls') == 'DateOtoN' else '' }}>
