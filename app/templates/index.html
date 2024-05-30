@@ -6,6 +6,27 @@
     <div class = "pageTitle">
         Our Galleries
     </div>
+    <div id = "sidebar">
+        <div id = "sidebarTitle">
+            Sort Galleries
+        </div>
+        <form action="{{ url_for('homePage') }}" method = "GET">
+            <input type = "radio" id = "DateLtoF" name = "sortGalls" value = "DateLtoF" onchange="this.form.submit()">
+            <label for = "DateLtoF" class = "sortGallsLabel">Date Created (Newest first)</label>
+            <br><input type = "radio" id = "DateFtoL" name = "sortGalls" value = "DateFtoL" onchange="this.form.submit()">
+            <label for = "DateFtoL" class = "sortGallsLabel">Gallery Name (Oldest first)</label>
+            <br>
+
+            <br><input type = "radio" id = "AlphaAtoZ" name = "sortGalls" value = "AlphaAtoZ" onchange="this.form.submit()">
+            <label for = "AlphaAtoZ" class = "sortGallsLabel">Gallery Name (A-Z)</label>
+            <br><input type = "radio" id = "AlphaZtoA" name = "sortGalls" value = "AlphaZtoA" onchange="this.form.submit()">
+            <label for = "AlphaZtoA" class = "sortGallsLabel">Gallery Name (Z-A)</label>
+            <br>
+
+            <br><input type = "radio" id = "username" name = "sortGalls" value = "username" onchange="this.form.submit()">
+            <label for = "username" class = "sortGallsLabel">Username (A-Z)</label>
+        </form>
+    </div>
     <div id = "galleries">
     {% for key in galleries %}
         {% set gallery = galleries[key] %}

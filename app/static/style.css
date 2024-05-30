@@ -74,6 +74,7 @@
     grid-gap: 20px;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     padding: 20px;
+    width: 75%
 }
 
 .galleryPreview{
@@ -107,6 +108,22 @@
 .previewDetails{
     color: black;
     margin-bottom: 50px;
+}
+
+/* for sidebar on homepage */
+#sidebar{
+    width: 20%;
+    background-color: var(--darkBackground);
+    float: left;
+}
+
+#sidebarTitle{
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.sortGallsLabel{
+    font-weight: normal;
 }
 
 /* for my galleries page */
