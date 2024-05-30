@@ -74,7 +74,7 @@
     grid-gap: 20px;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     padding: 20px;
-    width: 75%
+    width: minmax(80%, calc(100%-250px))
 }
 
 .galleryPreview{
@@ -112,7 +112,7 @@
 
 /* for sidebar on homepage */
 #sidebar{
-    width: 20%;
+    width: minmax(250px, 15%);
     background-color: var(--darkBackground);
     float: left;
     padding: 10px;

@@ -354,6 +354,9 @@ def editGallery(galleryID):
         newTitle = form.title.data
         newDesc = form.description.data
         photos = json.loads(form.photos.data)
+        #update dateLastEdited
+        db.session.execute(update(Gallery).where(Gallery.id == galleryID).values(dateLastEdited = datetime.date.today()))
+        db.session.commit()
         #if title has been changed it is updated
         if newTitle != gallery.title:
             db.session.execute(update(Gallery).where(Gallery.id == galleryID).values(title = newTitle))
