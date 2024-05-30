@@ -115,6 +115,8 @@
     width: 20%;
     background-color: var(--darkBackground);
     float: left;
+    padding: 10px;
+    padding-left: 20px;
 }
 
 #sidebarTitle{
@@ -124,6 +126,27 @@
 
 .sortGallsLabel{
     font-weight: normal;
+}
+
+#sidebar input[type="radio"] {
+    display: none;
+}
+
+#sidebar input[type="radio"] + label {
+    background-image: url('unchecked.png');
+    height: 15px;
+    display: inline-block;
+    padding: 5px;
+    padding-left: 30px;
+    vertical-align: middle;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+#sidebar input[type="radio"]:checked + label {
+    background-image: url('checked.png');
+    vertical-align: middle;
+    height: 15px;
 }
 
 /* for my galleries page */

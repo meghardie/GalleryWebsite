@@ -11,19 +11,19 @@
             Sort Galleries
         </div>
         <form action="{{ url_for('homePage') }}" method = "GET">
-            <input type = "radio" id = "DateLtoF" name = "sortGalls" value = "DateNtoO" onchange="this.form.submit()">
+            <input type = "radio" id = "DateNtoO" name = "sortGalls" value = "DateNtoO" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls', 'DateNtoO') == 'DateNtoO' else '' }}>
             <label for = "DateNtoO" class = "sortGallsLabel">Date Created (Newest first)</label>
-            <br><input type = "radio" id = "DateFtoL" name = "sortGalls" value = "DateOtoN" onchange="this.form.submit()">
+            <br><input type = "radio" id = "DateOtoN" name = "sortGalls" value = "DateOtoN" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls') == 'DateOtoN' else '' }}>
             <label for = "DateOtoN" class = "sortGallsLabel">Date Created (Oldest first)</label>
             <br>
 
-            <br><input type = "radio" id = "AlphaAtoZ" name = "sortGalls" value = "AlphaAtoZ" onchange="this.form.submit()">
+            <br><input type = "radio" id = "AlphaAtoZ" name = "sortGalls" value = "AlphaAtoZ" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls') == 'AlphaAtoZ' else '' }}>
             <label for = "AlphaAtoZ" class = "sortGallsLabel">Gallery Name (A-Z)</label>
-            <br><input type = "radio" id = "AlphaZtoA" name = "sortGalls" value = "AlphaZtoA" onchange="this.form.submit()">
+            <br><input type = "radio" id = "AlphaZtoA" name = "sortGalls" value = "AlphaZtoA" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls') == 'AlphaZtoA' else '' }}>
             <label for = "AlphaZtoA" class = "sortGallsLabel">Gallery Name (Z-A)</label>
             <br>
 
-            <br><input type = "radio" id = "username" name = "sortGalls" value = "username" onchange="this.form.submit()">
+            <br><input type = "radio" id = "username" name = "sortGalls" value = "username" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls') == 'username' else '' }}>
             <label for = "username" class = "sortGallsLabel">Username (A-Z)</label>
         </form>
     </div>
