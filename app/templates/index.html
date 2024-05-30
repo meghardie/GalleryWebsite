@@ -11,10 +11,10 @@
             Sort Galleries
         </div>
         <form action="{{ url_for('homePage') }}" method = "GET">
-            <input type = "radio" id = "DateLtoF" name = "sortGalls" value = "DateLtoF" onchange="this.form.submit()">
-            <label for = "DateLtoF" class = "sortGallsLabel">Date Created (Newest first)</label>
-            <br><input type = "radio" id = "DateFtoL" name = "sortGalls" value = "DateFtoL" onchange="this.form.submit()">
-            <label for = "DateFtoL" class = "sortGallsLabel">Gallery Name (Oldest first)</label>
+            <input type = "radio" id = "DateLtoF" name = "sortGalls" value = "DateNtoO" onchange="this.form.submit()">
+            <label for = "DateNtoO" class = "sortGallsLabel">Date Created (Newest first)</label>
+            <br><input type = "radio" id = "DateFtoL" name = "sortGalls" value = "DateOtoN" onchange="this.form.submit()">
+            <label for = "DateOtoN" class = "sortGallsLabel">Date Created (Oldest first)</label>
             <br>
 
             <br><input type = "radio" id = "AlphaAtoZ" name = "sortGalls" value = "AlphaAtoZ" onchange="this.form.submit()">

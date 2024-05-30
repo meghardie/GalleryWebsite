@@ -291,7 +291,28 @@ class createGalleryForm(FlaskForm):
 
 @app.route("/")
 def homePage():
-    return render_template('index.html', galleries = galleries, photos = photos, users = users, loggedIn = isLoggedIn(), username = getCurrentUsername())
+    sortVar = request.args.get("sortGalls", "name")
+    sortedGalls = galleries.copy()
+    #sort galleries from newest to oldest
+    if sortVar == "DateNtoO":
+        sortedGalls = dict(sorted(sortedGalls.items(), key=lambda item: item[1]['dateCreated'], reverse = True))
+    #sort galleries from oldest to newest
+    elif sortVar == "DateOtoN":
+        sortedGalls = dict(sorted(sortedGalls.items(), key=lambda item: item[1]['dateCreated']))
+    #sort galleries by title A-Z
+    elif sortVar == "AlphaAtoZ":
+        sortedGalls = dict(sorted(sortedGalls.items(), key=lambda item: item[1]['title'].lower()))
+    #sort galleries by title Z-A
+    elif sortVar == "AlphaZtoA":
+        sortedGalls = dict(sorted(sortedGalls.items(), key=lambda item: item[1]['title'].lower(), reverse = True))
+    #sort galleries by username A-Z
+    elif sortVar == "username":
+        sortedGalls = dict(sorted(sortedGalls.items(), key=lambda item: users[item[1]['userId']]['username']))
+    #if sortVar undefined then sort by date - newest to oldest
+    else:
+        sortedGalls = dict(sorted(sortedGalls.items(), key=lambda item: item[1]['dateCreated'], reverse= True))
+    print(sortedGalls)
+    return render_template('index.html', galleries = sortedGalls, photos = photos, users = users, loggedIn = isLoggedIn(), username = getCurrentUsername())
 
 @app.route("/viewGallery<int:galleryID>")
 def viewGallery(galleryID):
