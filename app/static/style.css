@@ -72,13 +72,13 @@
 #galleries{
     display:grid;
     grid-gap: 20px;
-    grid-template-columns: repeat(auto-fit, 260px);
+    grid-template-columns: repeat(auto-fit, 300px);
     justify-content: space-between;
     padding: 20px 50px;
     width: minmax(80%, calc(100%-250px))
 }
 
-.galleryPreview{
+.galleryTilePreview{
     background-color: var(--darkBackground);
 }
 
@@ -89,8 +89,8 @@
     place-content: center;
     margin: auto;
     margin-bottom: 10px;
-    height: 255px;
     background-color: var(--lightBackground);
+    padding: 10px;
 }
 
 .previewTitleDate{
