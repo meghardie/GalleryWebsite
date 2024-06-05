@@ -5,28 +5,34 @@
 {% block content %}
     <div class = "pageTitle">
         Our Galleries
+        <hr id = "homepageHR">
     </div>
-    <!-- <div id = "sidebar">
-        <div id = "sidebarTitle">
-            Sort Galleries
-        </div>
-        <form action="{{ url_for('homePage') }}" method = "GET" id = "sidebarForm">
+    <div id = "sortbar">
+        <form action="{{ url_for('homePage') }}" method = "GET" id = "sortbarForm">
+            <div id = "sortbarTitle">
+                Sort Galleries:
+            </div>
+            <div>
             <input type = "radio" id = "DateNtoO" name = "sortGalls" value = "DateNtoO" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls', 'DateNtoO') == 'DateNtoO' else '' }}>
             <label for = "DateNtoO" class = "sortGallsLabel">Date Created (Newest first)</label>
-            <br><input type = "radio" id = "DateOtoN" name = "sortGalls" value = "DateOtoN" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls') == 'DateOtoN' else '' }}>
+            </div>
+            <div><input type = "radio" id = "DateOtoN" name = "sortGalls" value = "DateOtoN" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls') == 'DateOtoN' else '' }}>
             <label for = "DateOtoN" class = "sortGallsLabel">Date Created (Oldest first)</label>
-            <br>
-
-            <br><input type = "radio" id = "AlphaAtoZ" name = "sortGalls" value = "AlphaAtoZ" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls') == 'AlphaAtoZ' else '' }}>
+            </div>
+            <div>
+            <input type = "radio" id = "AlphaAtoZ" name = "sortGalls" value = "AlphaAtoZ" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls') == 'AlphaAtoZ' else '' }}>
             <label for = "AlphaAtoZ" class = "sortGallsLabel">Gallery Name (A-Z)</label>
-            <br><input type = "radio" id = "AlphaZtoA" name = "sortGalls" value = "AlphaZtoA" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls') == 'AlphaZtoA' else '' }}>
+            </div>
+            <div>
+            <input type = "radio" id = "AlphaZtoA" name = "sortGalls" value = "AlphaZtoA" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls') == 'AlphaZtoA' else '' }}>
             <label for = "AlphaZtoA" class = "sortGallsLabel">Gallery Name (Z-A)</label>
-            <br>
-
-            <br><input type = "radio" id = "username" name = "sortGalls" value = "username" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls') == 'username' else '' }}>
+            </div>
+            <div>
+            <input type = "radio" id = "username" name = "sortGalls" value = "username" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls') == 'username' else '' }}>
             <label for = "username" class = "sortGallsLabel">Username (A-Z)</label>
+            </div>
         </form>
-    </div> -->
+    </div>
     <div id = "galleries">
     {% for key in galleries %}
         {% set gallery = galleries[key] %}

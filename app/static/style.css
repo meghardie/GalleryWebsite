@@ -110,17 +110,33 @@
     margin-bottom: 50px;
 }
 
-/* for sidebar on homepage */
-#sidebar{
-    width: minmax(250px, 15%);
-    background-color: var(--darkBackground);
-    float: left;
-    padding: 10px;
-    padding-left: 20px;
-    height: 100vh;
+#homepageHR{
+    margin: 0;
+    border-color: black;
+    width: 90%;
+    margin: auto;
+    margin-top: 10px;
+    background-color: green;
 }
 
-#sidebarTitle{
+/* for sortbar on homepage */
+#sortbar{
+    background-color: var(--darkBackground);
+    height: 80px;
+    padding: 10px;
+    padding-left: 25px;
+}
+
+#sortbarForm{
+    display: grid;
+    grid-template-columns: 125px repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-rows: 100%;
+    align-items: center;
+    grid-gap: 20px;
+    padding: 10px;
+}
+
+#sortbarTitle{
     font-weight: bold;
     font-size: 1.2em;
 }
@@ -129,15 +145,15 @@
     font-weight: normal;
 }
 
-#sidebarForm label{
+#sortbarForm label{
     padding-bottom: 10px;
 }
 
-#sidebar input[type="radio"] {
-    display: none;
+#sortbar input[type="radio"] {
+    display: none; 
 }
 
-#sidebar input[type="radio"] + label {
+#sortbar input[type="radio"] + label {
     background-image: url('unchecked.png');
     height: 15px;
     display: inline-block;
@@ -148,7 +164,7 @@
     background-repeat: no-repeat;
 }
 
-#sidebar input[type="radio"]:checked + label {
+#sortbar input[type="radio"]:checked + label {
     background-image: url('checked.png');
     vertical-align: middle;
     height: 15px;
