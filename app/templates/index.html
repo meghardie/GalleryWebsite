@@ -8,10 +8,10 @@
         <hr id = "homepageHR">
     </div>
     <div id = "sortbar">
+        <div id = "sortbarTitle">
+            Sort Galleries:
+        </div>
         <form action="{{ url_for('homePage') }}" method = "GET" id = "sortbarForm">
-            <div id = "sortbarTitle">
-                Sort Galleries:
-            </div>
             <div>
             <input type = "radio" id = "DateNtoO" name = "sortGalls" value = "DateNtoO" onchange="this.form.submit()"  {{ 'checked' if request.args.get('sortGalls', 'DateNtoO') == 'DateNtoO' else '' }}>
             <label for = "DateNtoO" class = "sortGallsLabel">Date Created (Newest first)</label>

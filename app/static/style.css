@@ -122,23 +122,24 @@
 /* for sortbar on homepage */
 #sortbar{
     background-color: var(--darkBackground);
-    height: 80px;
     padding: 10px;
     padding-left: 25px;
 }
 
 #sortbarForm{
     display: grid;
-    grid-template-columns: 125px repeat(auto-fill, minmax(200px, 1fr));
-    grid-template-rows: 100%;
+    grid-template-columns:repeat(auto-fill, minmax(205px, 1fr));
     align-items: center;
     grid-gap: 20px;
     padding: 10px;
+    padding-bottom: 20px;
 }
 
 #sortbarTitle{
     font-weight: bold;
     font-size: 1.2em;
+    float: left;
+    padding-top: 5px;
 }
 
 .sortGallsLabel{
