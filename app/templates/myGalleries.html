@@ -7,7 +7,7 @@
         {% for gallery in galleries %}
             {% set numPhotos = gallery['numPhotos'] %}
             {% set photosList = gallery['photos'] %}
-            <div class = "galleryPreview">
+            <div class = "galleryTilePreview">
                 <a href = "{{ url_for('viewGallery', galleryID = gallery['id'])}}">
                     <div class = "photosPreview">
                         {% for i in range(4) %}
