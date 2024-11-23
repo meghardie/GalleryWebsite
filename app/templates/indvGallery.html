@@ -17,7 +17,12 @@
                 Date Created: {{dateCreated.strftime('%d/%m/%Y')}}<br>
                 Date Last Edited: {{dateLastEdited.strftime('%d/%m/%Y')}}
             </div> 
-            <div class = "galleryUser">{{galleryUsername}}</div>
+            <div class = "galleryUser">
+                {{galleryUsername}}
+                {% if username == galleryUsername %}
+                    <div class = "editButton" id = "{{id}}"><a href = "{{ url_for('editGallery', galleryID = id)}}" >Edit Gallery</a></div>
+                {% endif %}
+            </div>
             <div class = "galleryDescription">
                 {{description}}
             </div>

@@ -56,7 +56,7 @@ def viewGallery(galleryID):
     for photo in photos:
         URLs[count] = photo.photoURL
         count += 1
-    return render_template('indvGallery.html', URLs = URLs, username = getCurrentUsername(), title = gallery['title'], description = gallery['description'], numPhotos = gallery['numPhotos'], dateCreated = gallery['dateCreated'], dateLastEdited = gallery['dateLastEdited'], galleryUsername = users[gallery['userId']]["username"], loggedIn = isLoggedIn())
+    return render_template('indvGallery.html', URLs = URLs, username = getCurrentUsername(), id = gallery['id'], title = gallery['title'], description = gallery['description'], numPhotos = gallery['numPhotos'], dateCreated = gallery['dateCreated'], dateLastEdited = gallery['dateLastEdited'], galleryUsername = users[gallery['userId']]["username"], loggedIn = isLoggedIn())
 
 @app.route("/editGallery<int:galleryID>", methods = ['GET', 'POST'])
 def editGallery(galleryID):

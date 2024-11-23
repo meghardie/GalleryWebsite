@@ -265,10 +265,11 @@
 
 .galleryUser{
     float: right;
+    margin-bottom: 20px;
 }
 
 .galleryDescription{
-    margin-top: 40px;
+    margin-top: 80px;
     background-color: var(--darkBackground);
     font-weight: normal;
 }
